@@ -9,20 +9,17 @@ import PublicLayout from './layouts/PublicLayout'
 const App = (): JSX.Element => {
   return (
     <BrowserRouter>
-
-        <PublicLayout>
-          <Routes>
+      <Routes>
+        <Route element={<PublicLayout />}>
             <Route path='/' element={<Login />}></Route>
             <Route path='/login' element={<Login />}></Route>
             <Route path='/register' element={<Register />}></Route>
-          </Routes>
-        </PublicLayout>
+        </Route>
 
-        <PrivateLayout>
-          <Routes>
-            <Route path='/chat' element={<ChatRoom />}></Route>
-          </Routes>
-        </PrivateLayout>
+        <Route element={<PrivateLayout />}>
+          <Route path='/chat' element={<ChatRoom />}></Route>
+        </Route>
+      </Routes>
     </BrowserRouter>
   )
 }

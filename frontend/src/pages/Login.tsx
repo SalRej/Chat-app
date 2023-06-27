@@ -5,17 +5,24 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import React from 'react'
+import axiosInstance from '../axiosInstance'
 
 const Login = (): JSX .Element => {
+  const navigate = useNavigate()
   const handleSubmit = (event: any): void => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
 
-    console.log({
+    axiosInstance.post('/login', {
       email: data.get('email'),
       password: data.get('password')
+    }).then((data: any) => {
+      localStorage.setItem('token', data.data.token)
+      navigate('/chat')
+    }).catch((e) => {
+      console.log(e)
     })
   }
 

@@ -1,15 +1,14 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 
-const PrivateLayout = ({ children }: any): JSX.Element => {
+const PrivateLayout = (): JSX.Element => {
   const token = localStorage.getItem('token')
-  if (!token) {
-    return <Navigate to="/" replace={true} />
-  }
 
+  if (!token) {
+    return <Navigate to='/'/>
+  }
   return (
-    <>{children}</>
+    <Outlet />
   )
 }
-
 export default PrivateLayout

@@ -62,12 +62,18 @@ export const loginUserSchema = {
       required: ['password', 'email']
     },
     response: {
-      200: {
+      201: {
         type: 'object',
         properties: {
-          name: { type: 'string' },
-          email: { type: 'string' },
-          id: { type: 'string' }
+          user: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              email: { type: 'string' },
+              id: { type: 'string' }
+            }
+          },
+          token: { type: 'string' }
         }
       }
     }
