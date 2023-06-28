@@ -8,24 +8,42 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import axiosInstance from '../axiosInstance'
+import { useMutation } from '@tanstack/react-query'
 
+interface RegistrationValues {
+  email: string
+  password: string
+  confirmPassword: string
+  name: string
+}
 const Register = (): JSX.Element => {
   const navigate = useNavigate()
+  const { mutate: register } = useMutation({
+    mutationFn: async ({ email, password, confirmPassword, name }: RegistrationValues) => {
+      return await axiosInstance.post('/user', {
+        email,
+        password,
+        confirmPassword,
+        name
+      })
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('token', data.data.token)
+      navigate('/chat')
+    },
+    onError: (e) => {
+      console.log(e)
+    }
+  })
+
   const handleSubmit = (event: any): void => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-
-    axiosInstance.post('/user', {
-      email: data.get('email'),
-      password: data.get('password'),
-      confirmPassword: data.get('confirm-password'),
-      name: data.get('name')
-    }).then((data: any) => {
-      console.log(data.data.token)
-      localStorage.setItem('token', data.data.token)
-      navigate('/chat')
-    }).catch(e => {
-      console.log(e)
+    register({
+      email: data.get('email') as string,
+      password: data.get('password') as string,
+      confirmPassword: data.get('confirm-password') as string,
+      name: data.get('name') as string
     })
   }
 

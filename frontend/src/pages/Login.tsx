@@ -8,22 +8,28 @@ import Container from '@mui/material/Container'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import React from 'react'
 import axiosInstance from '../axiosInstance'
+import { useMutation } from '@tanstack/react-query'
 
 const Login = (): JSX .Element => {
   const navigate = useNavigate()
+
+  const { mutate: login } = useMutation({
+    mutationFn: async ({ email, password }: { email: string, password: string }) => {
+      return await axiosInstance.post('/login', { email, password })
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('token', data.data.token)
+      navigate('/chat')
+    },
+    onError: (e) => {
+      console.log(e)
+    }
+  })
   const handleSubmit = (event: any): void => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
 
-    axiosInstance.post('/login', {
-      email: data.get('email'),
-      password: data.get('password')
-    }).then((data: any) => {
-      localStorage.setItem('token', data.data.token)
-      navigate('/chat')
-    }).catch((e) => {
-      console.log(e)
-    })
+    login({ email: data.get('email') as string, password: data.get('password') as string })
   }
 
   return (
