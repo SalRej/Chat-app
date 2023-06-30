@@ -7,6 +7,7 @@ const Header = (): JSX.Element => {
 
   const logout = (): void => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     navigate('/login')
   }
   return (

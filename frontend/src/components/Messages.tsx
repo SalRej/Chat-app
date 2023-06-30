@@ -1,14 +1,16 @@
 import { Box, Button, Chip, Stack, TextField, Typography } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axiosInstance from '../axiosInstance'
 import { blue } from '@mui/material/colors'
+import pusher from '../config/pusher'
 
 const Messages = ({ userToChat }: any): JSX.Element => {
   const [textMessage, setTextMessage] = useState('')
 
-  const token = localStorage.getItem('token')
-  const { data: messages } = useQuery({
+  const [messages, setMessages] = useState<any>([])
+
+  useQuery({
     queryFn: async () => {
       return await axiosInstance.get(`/message/${userToChat.id as string}`, {
         headers: {
@@ -16,7 +18,10 @@ const Messages = ({ userToChat }: any): JSX.Element => {
         }
       })
     },
-    queryKey: ['message', userToChat.id, token]
+    onSuccess: (data) => {
+      setMessages(data?.data ?? [])
+    },
+    queryKey: [userToChat.id, 'message']
   })
 
   const { mutate: sendMessage } = useMutation({
@@ -31,6 +36,24 @@ const Messages = ({ userToChat }: any): JSX.Element => {
       })
     }
   })
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') as string)
+    // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
+    const channelName = [user.id, userToChat.id].sort().join('-')
+    const channel = pusher.subscribe(channelName)
+
+    channel.bind('message_sent', (data: any) => {
+      const { message } = data
+      console.log(message)
+      setMessages((prev: any) => {
+        return [
+          ...prev,
+          message
+        ]
+      })
+    })
+  }, [userToChat])
   const updateTextMessage = (event: any): void => {
     setTextMessage(event.target.value)
   }
@@ -39,16 +62,19 @@ const Messages = ({ userToChat }: any): JSX.Element => {
     <Box sx={{ width: '100%' }}>
         <Stack spacing={1}>
             {
-                messages?.data.length === 0
+                messages.length === 0
                   ? <Typography>Say hi to {userToChat.name}</Typography>
-                  : messages?.data.map((message: any) => {
+                  : messages.map((message: any) => {
                     return (
                         <Chip
                             sx={{
                               maxWidth: '50%',
                               alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
                               backgroundColor: message.senderId === userToChat.id ? blue[100] : blue[400]
-                            }} key={message.id} label={message.text}/>
+                            }}
+                            key={message.id}
+                            label={message.text}
+                        />
                     )
                   })
 

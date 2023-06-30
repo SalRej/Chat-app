@@ -1,6 +1,7 @@
 import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { type ITokenHeader } from '../interfaces/user'
 import { PrismaClient } from '@prisma/client'
+import pusher from '../config/pusher'
 
 const prisma = new PrismaClient()
 
@@ -24,6 +25,9 @@ export const getMessagesHandler = async (
           { recieverId: user.id, senderId: chattingUserId },
           { recieverId: chattingUserId, senderId: user.id }
         ]
+      },
+      orderBy: {
+        createdAt: 'asc'
       }
     })
 
@@ -58,6 +62,12 @@ export const createMessageHandler = async (
     })
 
     if (message) {
+      const channelName = [user.id, recieverId].sort().join('-')
+
+      pusher.trigger(channelName, 'message_sent', {
+        message
+      })
+
       return await res.code(200).send(message)
     } else {
       return await res.code(200).send('Could not create the message')

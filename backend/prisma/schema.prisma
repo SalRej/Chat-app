@@ -30,10 +30,11 @@ model Todo {
 }
 
 model Message {
-  id         String @id @default(uuid())
+  id         String   @id @default(uuid())
   text       String
-  sender     User   @relation("Sender", fields: [senderId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
   senderId   String
-  reciever   User   @relation("Reciever", fields: [recieverId], references: [id])
+  reciever   User     @relation("Reciever", fields: [recieverId], references: [id])
   recieverId String
+  createdAt  DateTime @default(now())
 }
