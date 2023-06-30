@@ -15,3 +15,15 @@ export const getMessagesSchema = {
     }
   }
 }
+
+export const createMessageSchema = {
+  schema: {
+    body: {
+      type: 'object',
+      properties: {
+        recieverId: { type: 'string' },
+        messageText: { type: 'string' }
+      }
+    }
+  }
+}
