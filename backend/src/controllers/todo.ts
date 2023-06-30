@@ -47,7 +47,6 @@ export const getAllTodosHandler = async (
       email
     }
   })
-
   if (user) {
     const todos = await prisma.todo.findMany({
       where: {
@@ -55,7 +54,11 @@ export const getAllTodosHandler = async (
       }
     })
 
-    return await res.code(200).send(todos)
+    if (todos) {
+      return await res.code(200).send(todos)
+    } else {
+      return await res.code(200).send([])
+    }
   }
 }
 
@@ -63,7 +66,7 @@ export const updateTodoHandler = async (
   req: FastifyRequest<{ Body: ITodo, Headers: ITokenHeader, Params: { id: string } }>,
   res: FastifyReply
 ): Promise<void> => {
-  const { name, description } = req.body
+  const { name, description, done } = req.body
   const { email } = req.headers
   const { id } = req.params
   const user = await prisma.user.findUnique({
@@ -80,6 +83,7 @@ export const updateTodoHandler = async (
       data: {
         name,
         description,
+        done,
         userId: user.id
       }
     })

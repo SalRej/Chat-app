@@ -21,7 +21,6 @@ export const userPrivateRoutes = (
 ): void => {
   fastify.addHook('preHandler', (req: FastifyRequest <{ Headers: ITokenHeader }>, res, done) => {
     verifyToken(req, res, done)
-    done()
   })
   fastify.get('/user', getUserSchema, getUserHandler)
   done()

@@ -7,11 +7,12 @@ import { createTodoHandler, delteTodoHandler, getAllTodosHandler, updateTodoHand
 export const todoRoutes = async (fastify: FastifyInstance, options: any, done: () => void): Promise<void> => {
   fastify.addHook('preHandler', (req: FastifyRequest <{ Headers: ITokenHeader }>, res, done) => {
     verifyToken(req, res, done)
-    done()
   })
 
   fastify.post('/todo', createTodoSchema, createTodoHandler)
   fastify.get('/todo', getAlltodosSchema, getAllTodosHandler)
   fastify.put('/todo/:id', updateTodoSchema, updateTodoHandler)
   fastify.delete('/todo/:id', deleteTodoSchema, delteTodoHandler)
+
+  done()
 }

@@ -11,7 +11,6 @@ export const createUserHandler = async (
   res: FastifyReply
 ): Promise<void> => {
   const { name, email, password, confirmPassword } = req.body
-
   const doesUserExist = await prisma.user.findUnique({
     where: {
       email

@@ -1,13 +1,26 @@
-import { AppBar, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Header = (): JSX.Element => {
+  const navigate = useNavigate()
+
+  const logout = (): void => {
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
   return (
-        <AppBar position="static">
-            <Toolbar >
-                <Typography variant="h5" align="center">Todo App</Typography>
-            </Toolbar>
-        </AppBar>
+
+    <Box flexGrow={1}>
+      <AppBar position="static">
+      <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Todos
+          </Typography>
+          <Button onClick={logout} color="inherit">Logout</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   )
 }
 

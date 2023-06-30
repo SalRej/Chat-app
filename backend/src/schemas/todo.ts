@@ -14,7 +14,8 @@ export const createTodoSchema = {
         properties: {
           name: { type: 'string' },
           description: { type: 'string' },
-          id: { type: 'string' }
+          id: { type: 'string' },
+          done: { type: 'boolean' }
         }
       }
     }
@@ -37,7 +38,8 @@ export const getAlltodosSchema = {
           properties: {
             name: { type: 'string' },
             description: { type: 'string' },
-            id: { type: 'string' }
+            id: { type: 'string' },
+            done: { type: 'boolean' }
           }
         }
       }
@@ -57,7 +59,8 @@ export const updateTodoSchema = {
       type: 'object',
       properties: {
         name: { type: 'string' },
-        description: { type: 'string' }
+        description: { type: 'string' },
+        done: { type: 'boolean' }
       },
       required: ['name', 'description']
     },
@@ -67,7 +70,8 @@ export const updateTodoSchema = {
         properties: {
           name: { type: 'string' },
           description: { type: 'string' },
-          id: { type: 'string' }
+          id: { type: 'string' },
+          done: { type: 'boolean' }
         }
       }
     }
