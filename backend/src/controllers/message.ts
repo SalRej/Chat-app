@@ -21,10 +21,8 @@ export const getMessagesHandler = async (
     const messages = await prisma.message.findMany({
       where: {
         OR: [
-          { recieverId: user.id },
-          { recieverId: chattingUserId },
-          { senderId: user.id },
-          { senderId: chattingUserId }
+          { recieverId: user.id, senderId: chattingUserId },
+          { recieverId: chattingUserId, senderId: user.id }
         ]
       }
     })
