@@ -6,6 +6,7 @@ import { userPrivateRoutes, userPublicRoutes } from './routes/user'
 import cors from '@fastify/cors'
 import { PrismaClient } from '@prisma/client'
 import { todoRoutes } from './routes/todo'
+import { messagesRoutes } from './routes/message'
 
 const prisma = new PrismaClient()
 
@@ -33,6 +34,7 @@ const startServer = (): void => {
   server.register(userPublicRoutes)
   server.register(userPrivateRoutes)
   server.register(todoRoutes)
+  server.register(messagesRoutes)
 
   const port = Number(process.env.PORT ?? 5000)
   server.listen({ port }, (err, adress) => {
