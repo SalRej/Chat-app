@@ -4,9 +4,9 @@ import fastifyUi from '@fastify/swagger-ui'
 import fastify from 'fastify'
 import { userPrivateRoutes, userPublicRoutes } from './routes/user'
 import cors from '@fastify/cors'
-
 import { PrismaClient } from '@prisma/client'
 import { todoRoutes } from './routes/todo'
+import pusher from './config/pusher'
 
 const prisma = new PrismaClient()
 

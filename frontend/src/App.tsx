@@ -6,6 +6,7 @@ import Todos from './pages/Todos'
 import PrivateLayout from './layouts/PrivateLayout'
 import PublicLayout from './layouts/PublicLayout'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Chat from './pages/Chat'
 
 const queryClient = new QueryClient()
 
@@ -21,7 +22,8 @@ const App = (): JSX.Element => {
           </Route>
 
           <Route element={<PrivateLayout />}>
-            <Route path='/chat' element={<Todos />}></Route>
+            <Route path='/todo' element={<Todos />}></Route>
+            <Route path='/chat' element={<Chat />}></Route>
           </Route>
         </Routes>
       </QueryClientProvider>

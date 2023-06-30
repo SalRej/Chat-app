@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add'
 
 const generateRandomString = (length: number): any => [...Array(length)].map(() => Math.random().toString(36).charAt(2)).join('')
 
-const ChatRoom = (): JSX.Element => {
+const Todos = (): JSX.Element => {
   const { addTodo } = useTodo()
 
   const onAddTodo = (): void => {
@@ -27,4 +27,4 @@ const ChatRoom = (): JSX.Element => {
   )
 }
 
-export default ChatRoom
+export default Todos
