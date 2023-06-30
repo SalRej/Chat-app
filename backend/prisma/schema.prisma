@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  name     String
-  password String
-  todos    Todo[]
+  id               String    @id @default(uuid())
+  email            String    @unique
+  name             String
+  password         String
+  todos            Todo[]
+  sentMessages     Message[] @relation("Sender")
+  recievedMessages Message[] @relation("Reciever")
 }
 
 model Todo {
@@ -25,4 +27,13 @@ model Todo {
   description String
   user        User    @relation(fields: [userId], references: [id])
   userId      String
+}
+
+model Message {
+  id         String @id @default(uuid())
+  text       String
+  sender     User   @relation("Sender", fields: [senderId], references: [id])
+  senderId   String
+  reciever   User   @relation("Reciever", fields: [recieverId], references: [id])
+  recieverId String
 }

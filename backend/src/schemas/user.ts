@@ -79,3 +79,27 @@ export const loginUserSchema = {
     }
   }
 }
+
+export const getAllOtherUsersSchema = {
+  schema: {
+    headers: {
+      type: 'object',
+      properties: {
+        authorization: { type: 'string' }
+      }
+    },
+    response: {
+      200: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            id: { type: 'string' }
+          }
+        }
+      }
+    }
+  }
+}

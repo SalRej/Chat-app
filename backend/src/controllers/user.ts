@@ -95,3 +95,24 @@ export const loginUserHandler = async (
 
   return await res.code(400).send('There is no such email')
 }
+
+export const getAllOtherUsersHandler = async (
+  req: FastifyRequest<{ Headers: ITokenHeader }>,
+  res: FastifyReply
+): Promise<void> => {
+  const { email } = req.headers
+
+  const otherUsers = await prisma.user.findMany({
+    where: {
+      email: {
+        not: email
+      }
+    }
+  })
+
+  if (otherUsers) {
+    return await res.code(200).send(otherUsers)
+  } else {
+    return await res.code(400).send('Could not retrieve the users')
+  }
+}
