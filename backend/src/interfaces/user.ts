@@ -9,6 +9,6 @@ interface IUser {
 export default IUser
 
 export interface ITokenHeader {
-  authorization: string
+  authorization?: string | undefined
   email?: string
 }

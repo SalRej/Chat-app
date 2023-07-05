@@ -74,3 +74,41 @@ export const createMessageHandler = async (
     }
   }
 }
+
+export const createMessageWithImageHandler = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: any }>,
+  res: FastifyReply
+): Promise<void> => {
+  const { email } = req.headers
+  const { recieverId } = req.body as any
+  const file: any = req.file
+  const user = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  })
+  const fileName = file.filename // Get the file path
+
+  if (user) {
+    const message = await prisma.message.create({
+      data: {
+        text: `public/uploads/${fileName as string}`,
+        recieverId,
+        senderId: user.id,
+        isImage: true
+      }
+    })
+
+    if (message) {
+      const channelName = [user.id, recieverId as string].sort().join('-')
+
+      pusher.trigger(channelName, 'message_sent', {
+        message
+      })
+
+      return await res.code(200).send(message)
+    } else {
+      return await res.code(200).send('Could not create the message')
+    }
+  }
+}

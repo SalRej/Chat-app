@@ -37,4 +37,5 @@ model Message {
   reciever   User     @relation("Reciever", fields: [recieverId], references: [id])
   recieverId String
   createdAt  DateTime @default(now())
+  isImage    Boolean  @default(false)
 }

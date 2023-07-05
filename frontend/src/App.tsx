@@ -7,7 +7,6 @@ import PrivateLayout from './layouts/PrivateLayout'
 import PublicLayout from './layouts/PublicLayout'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Chat from './pages/Chat'
-
 const queryClient = new QueryClient()
 
 const App = (): JSX.Element => {

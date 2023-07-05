@@ -1,5 +1,6 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import CssBaseline from '@mui/material/CssBaseline'
 
 const PrivateLayout = (): JSX.Element => {
   const token = localStorage.getItem('token')
@@ -8,7 +9,10 @@ const PrivateLayout = (): JSX.Element => {
     return <Navigate to='/'/>
   }
   return (
-    <Outlet />
+    <>
+      <CssBaseline />
+      <Outlet />
+    </>
   )
 }
 export default PrivateLayout

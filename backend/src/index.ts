@@ -7,6 +7,9 @@ import cors from '@fastify/cors'
 import { PrismaClient } from '@prisma/client'
 import { todoRoutes } from './routes/todo'
 import { messagesRoutes } from './routes/message'
+import multipart from '@fastify/multipart'
+import fastifyStatic from '@fastify/static'
+import path from 'path'
 
 const prisma = new PrismaClient()
 
@@ -30,11 +33,20 @@ const startServer = (): void => {
     transformSpecificationClone: true
   })
 
+  const publicPath = path.join(process.cwd(), 'public')
+
+  console.log(publicPath)
   server.register(cors, {})
+  server.register(multipart)
+  server.register(fastifyStatic, {
+    root: path.join(publicPath),
+    prefix: '/public/' // Specify the URL prefix to access the static files
+  })
+
   server.register(userPublicRoutes)
   server.register(userPrivateRoutes)
-  server.register(todoRoutes)
   server.register(messagesRoutes)
+  server.register(todoRoutes)
 
   const port = Number(process.env.PORT ?? 5000)
   server.listen({ port }, (err, adress) => {

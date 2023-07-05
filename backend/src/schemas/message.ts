@@ -1,3 +1,4 @@
+
 export const getMessagesSchema = {
   schema: {
     response: {
@@ -8,7 +9,8 @@ export const getMessagesSchema = {
           properties: {
             text: { type: 'string' },
             senderId: { type: 'string' },
-            recieverId: { type: 'string' }
+            recieverId: { type: 'string' },
+            isImage: { type: 'boolean' }
           }
         }
       }
