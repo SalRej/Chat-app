@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import UsersList from '../components/UsersList'
-import Messages from '../components/Messages'
+import UsersList from '../components/Chat/UsersList'
+import Messages from '../components/Chat/Messages'
 import { Box, Stack } from '@mui/material'
 import Header from '../components/Header'
 

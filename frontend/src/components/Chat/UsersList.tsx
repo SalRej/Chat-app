@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import axiosInstance from '../axiosInstance'
+import axiosInstance from '../../axiosInstance'
 import { Box, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 const UsersList = ({ setUserToChat }: any): JSX.Element => {
