@@ -28,6 +28,7 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
                       borderRadius: '12px',
                       objectFit: 'cover'
                     }}
+                    loading='lazy'
                     src={`http://localhost:5000/${message.text as string}`}
                     key={message.id} alt='image'>
                   </img>
@@ -41,7 +42,7 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
                 }}
                 href={`http://localhost:5000/${message.text as string}`}
                 key={message.id}>
-                <Button variant='outlined'>
+                <Button variant='outlined' sx={{ borderRadius: '20px' }}>
                     Download file .{getExtension(message.text)}
                     <FileOpenIcon sx ={{ ml: 2 }}/>
                 </Button>

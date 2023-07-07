@@ -22,19 +22,22 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
     setTextMessage(event.target.value)
   }
 
+  const onSubmit = (e: any): void => {
+    e.preventDefault()
+    console.log(userToChat)
+    sendMessage({
+      textMessage,
+      recieverId: userToChat.id
+    })
+  }
+
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box component="form" sx={{ width: '100%' }} onSubmit={onSubmit}>
         <Divider variant="middle" />
-        <Stack direction='row' sx={{ width: '100%', pt: 3 }}>
+        <Stack spacing={2} direction='row' sx={{ width: '100%', pt: 3 }}>
             <Stack direction='row' sx={{ width: '100%' }}>
                 <TextField value={textMessage} fullWidth size='small' type='text' onChange={updateTextMessage}></TextField>
-                <Button onClick={() => {
-                  sendMessage({
-                    textMessage,
-                    recieverId: userToChat.id
-                  })
-                }} variant='contained'>Send</Button>
-
+                <Button variant='contained'>Send</Button>
             </Stack>
             <input
                 id="fileInput"
