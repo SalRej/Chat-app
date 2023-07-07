@@ -1,28 +1,29 @@
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useEffect, useState } from 'react'
-import axiosInstance from '../../axiosInstance'
+import React, { useContext, useEffect, useState } from 'react'
+import axiosInstance from '../../config/axiosInstance'
 import pusher from '../../config/pusher'
 import ChatInput from './ChatInput'
 import MessagesList from './MessagesList'
+import type User from '../../interfaces/User'
+import AuthContext from '../../context/AuthContext'
 
-const Messages = ({ userToChat }: any): JSX.Element => {
+interface Props {
+  userToChat: User | null
+}
+const Messages = ({ userToChat }: Props): JSX.Element => {
+  const { user } = useContext(AuthContext)
   const [textMessage, setTextMessage] = useState('')
-
   const [messages, setMessages] = useState<any>([])
 
   useQuery({
     queryFn: async () => {
-      return await axiosInstance.get(`/message/${userToChat.id as string}`, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token') as string}`
-        }
-      })
+      return await axiosInstance.get(`/message/${userToChat?.id as string}`)
     },
     onSuccess: (data) => {
       setMessages(data?.data ?? [])
     },
-    queryKey: [userToChat.id, 'message']
+    queryKey: [userToChat?.id, 'message']
   })
 
   const { mutate: sendMessage } = useMutation({
@@ -43,24 +44,17 @@ const Messages = ({ userToChat }: any): JSX.Element => {
 
   const { mutate: sendImageMessage } = useMutation({
     mutationFn: async (formData: any) => {
-      await axiosInstance.post('/message/image', formData, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token') as string}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      await axiosInstance.post('/message/image', formData)
     }
   })
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') as string)
     // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-    const channelName = [user.id, userToChat.id].sort().join('-')
+    const channelName = [user?.id, userToChat?.id].sort().join('-')
     const channel = pusher.subscribe(channelName)
 
     channel.bind('message_sent', (data: any) => {
       const { message } = data
-      console.log(message)
       setMessages((prev: any) => {
         return [
           ...prev,
@@ -73,19 +67,20 @@ const Messages = ({ userToChat }: any): JSX.Element => {
   return (
     <Box
       sx={{
-        width: '100%',
-        p: 3
-      }}>
-      <Stack spacing={2}>
-        <MessagesList userToChat={userToChat} messages={messages} />
-        <ChatInput
-          sendImageMessage={sendImageMessage}
-          sendMessage={sendMessage}
-          textMessage={textMessage}
-          userToChat={userToChat}
-          setTextMessage={setTextMessage}
-        />
-      </Stack>
+        display: 'flex',
+        flexDirection: 'column',
+        p: 3,
+        height: '100%'
+      }}
+    >
+      <MessagesList userToChat={userToChat} messages={messages} />
+      <ChatInput
+        sendImageMessage={sendImageMessage}
+        sendMessage={sendMessage}
+        textMessage={textMessage}
+        userToChat={userToChat}
+        setTextMessage={setTextMessage}
+      />
     </Box>
   )
 }

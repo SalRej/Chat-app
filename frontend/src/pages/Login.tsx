@@ -1,38 +1,27 @@
-import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Link from '@mui/material/Link'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import React from 'react'
-import axiosInstance from '../axiosInstance'
-import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import 'react-toastify/dist/ReactToastify.css'
+import { LoadingButton } from '@mui/lab'
+import useLoginUser, { type LoginValues } from '../hooks/user/useLoginUser'
 
 const Login = (): JSX .Element => {
-  const navigate = useNavigate()
-
-  const { mutate: login } = useMutation({
-    mutationFn: async ({ email, password }: { email: string, password: string }) => {
-      return await axiosInstance.post('/login', { email, password })
-    },
-    onSuccess: (data) => {
-      localStorage.setItem('token', data.data.token)
-      localStorage.setItem('user', JSON.stringify(data.data.user))
-      navigate('/chat')
-    },
-    onError: (e) => {
-      console.log(e)
+  const { register, formState, handleSubmit } = useForm<LoginValues>({
+    defaultValues: {
+      email: '',
+      password: ''
     }
   })
-  const handleSubmit = (event: any): void => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
 
-    login({ email: data.get('email') as string, password: data.get('password') as string })
-  }
+  const { errors } = formState
 
+  const { onSubmit, isLoading } = useLoginUser()
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -46,42 +35,53 @@ const Login = (): JSX .Element => {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
-            required
             fullWidth
-            id="email"
             label="Email Address"
-            name="email"
-            autoComplete="email"
             autoFocus
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: 'Not a valid email'
+              }
+            })}
+            error={!!errors.email}
+            helperText={errors.email?.message}
           />
           <TextField
             margin="normal"
-            required
             fullWidth
-            name="password"
             label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
+            {...register('password', {
+              required: 'Password is required',
+              minLength: {
+                value: 8,
+                message: "Password can't be less than 8 characters"
+              }
+            })}
+            error={!!errors.password}
+            helperText={errors.password?.message}
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            loading={isLoading}
           >
             Login
-          </Button>
+          </LoadingButton>
           <Grid container>
             <Grid item>
+              <Link variant="body2">
                 <RouterLink to='/register'>
-                    <Link variant="body2">
-                        {"Don't have an account? Register"}
-                    </Link>
+                  {"Don't have an account? Register"}
                 </RouterLink>
+              </Link>
             </Grid>
           </Grid>
         </Box>

@@ -1,18 +1,22 @@
-import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
-import CssBaseline from '@mui/material/CssBaseline'
+import React, { useContext } from 'react'
+import { Outlet, Navigate } from 'react-router-dom'
+import AuthContext from '../context/AuthContext'
+import Loading from '../components/Loading'
 
 const PrivateLayout = (): JSX.Element => {
-  const token = localStorage.getItem('token')
+  const { user, isLoading } = useContext(AuthContext)
 
-  if (!token) {
-    return <Navigate to='/'/>
+  if (isLoading) {
+    return <Loading />
   }
+
+  if (!user) {
+    return <Navigate to="/login"/>
+  }
+
   return (
-    <>
-      <CssBaseline />
-      <Outlet />
-    </>
+    <Outlet />
   )
 }
+
 export default PrivateLayout

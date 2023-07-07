@@ -1,5 +1,5 @@
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
-import axiosInstance from '../axiosInstance'
+import axiosInstance from '../config/axiosInstance'
 import { useState } from 'react'
 
 const useTodo = (): {

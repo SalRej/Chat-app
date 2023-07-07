@@ -1,9 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
-import React from 'react'
-import axiosInstance from '../../axiosInstance'
-import { Box, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import React, { type Dispatch, type SetStateAction } from 'react'
+import axiosInstance from '../../config/axiosInstance'
+import { List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
-const UsersList = ({ setUserToChat }: any): JSX.Element => {
+import type User from '../../interfaces/User'
+
+interface Props {
+  setUserToChat: Dispatch<SetStateAction<User | null>>
+}
+const UsersList = ({ setUserToChat }: Props): JSX.Element => {
   const { data: users, isLoading } = useQuery({
     queryFn: async () => {
       return await axiosInstance.get('/users', {
@@ -18,32 +23,27 @@ const UsersList = ({ setUserToChat }: any): JSX.Element => {
     return <p>Loading</p>
   }
 
-  const changeChattingUser = (user: any): void => {
+  const changeChattingUser = (user: User): void => {
     setUserToChat({
       name: user.name,
-      id: user.id
+      id: user.id,
+      email: user.email
     })
   }
 
   return (
-    <Box
-    sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }}
-    >
-        <List>
-            {
-                users?.data.map((user: any) => {
-                  return (
-                    <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={user.name}></ListItemText>
-                    </ListItemButton>
-                  )
-                })
-            }
-        </List>
-    </Box>
+    <Paper elevation={4} sx={{ height: '100%' }}>
+      <List>
+        {users?.data.map((user: any) => (
+          <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary={user.name} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Paper>
   )
 }
 

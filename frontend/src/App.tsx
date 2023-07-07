@@ -7,25 +7,32 @@ import PrivateLayout from './layouts/PrivateLayout'
 import PublicLayout from './layouts/PublicLayout'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Chat from './pages/Chat'
+import { AuthProvider } from './context/AuthContext'
+import { ToastContainer } from 'react-toastify'
+import { CssBaseline } from '@mui/material'
 const queryClient = new QueryClient()
 
 const App = (): JSX.Element => {
   return (
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <Routes>
-          <Route element={<PublicLayout />}>
-              <Route path='/' element={<Login />}></Route>
-              <Route path='/login' element={<Login />}></Route>
-              <Route path='/register' element={<Register />}></Route>
-          </Route>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <Routes>
+            <Route element={<PublicLayout />}>
+                <Route path='/' element={<Login />}></Route>
+                <Route path='/login' element={<Login />}></Route>
+                <Route path='/register' element={<Register />}></Route>
+            </Route>
 
-          <Route element={<PrivateLayout />}>
-            <Route path='/todo' element={<Todos />}></Route>
-            <Route path='/chat' element={<Chat />}></Route>
-          </Route>
-        </Routes>
-      </QueryClientProvider>
+            <Route element={<PrivateLayout />}>
+              <Route path='/todo' element={<Todos />}></Route>
+              <Route path='/chat' element={<Chat />}></Route>
+            </Route>
+          </Routes>
+          <CssBaseline />
+          <ToastContainer />
+        </QueryClientProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

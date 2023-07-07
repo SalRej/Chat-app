@@ -1,4 +1,4 @@
-import { Stack, TextField, Button, Fab } from '@mui/material'
+import { Stack, TextField, Button, Fab, Divider, Box } from '@mui/material'
 import React from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
@@ -23,30 +23,33 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
   }
 
   return (
-    <Stack direction='row' sx={{ justifySelf: 'flex-end' }}>
-        <Stack direction='row'>
-            <TextField value={textMessage} fullWidth size='small' type='text' onChange={updateTextMessage}></TextField>
-            <Button onClick={() => {
-              sendMessage({
-                textMessage,
-                recieverId: userToChat.id
-              })
-            }} variant='contained'>Send</Button>
+    <Box sx={{ width: '100%', flexGrow: 1 }}>
+        <Divider variant="middle" />
+        <Stack direction='row' sx={{ width: '100%', pt: 3 }}>
+            <Stack direction='row' sx={{ width: '100%' }}>
+                <TextField value={textMessage} fullWidth size='small' type='text' onChange={updateTextMessage}></TextField>
+                <Button onClick={() => {
+                  sendMessage({
+                    textMessage,
+                    recieverId: userToChat.id
+                  })
+                }} variant='contained'>Send</Button>
 
-        </Stack>
+            </Stack>
             <input
-            id="fileInput"
-            type="file"
-            style={{ display: 'none' }}
-            onChange={handleFileInputChange}
+                id="fileInput"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={handleFileInputChange}
             />
 
             <label htmlFor="fileInput">
-            <Fab onClick={handleFabClick} color="primary" aria-label="add" size="small">
-                <CloudUploadIcon />
-            </Fab>
+                <Fab onClick={handleFabClick} color="primary" aria-label="add" size="small">
+                    <CloudUploadIcon />
+                </Fab>
             </label>
-    </Stack>
+        </Stack>
+    </Box>
   )
 }
 

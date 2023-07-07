@@ -16,16 +16,22 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
     <>
         {
             imageExtentions.includes(getExtension(message.text))
-              ? <img
-                style={{
-                  maxHeight: '300px',
-                  maxWidth: '40%',
-                  borderRadius: '12px',
-                  alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end'
-                }}
-                src={`http://localhost:5000/${message.text as string}`}
-                key={message.id} alt='image'>
-            </img>
+              ? <a style={{
+                alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
+                maxHeight: '300px',
+                maxWidth: '30%'
+              }} href={`http://localhost:5000/${message.text as string}`} target='_blank' rel="noreferrer">
+                  <img
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '12px',
+                      objectFit: 'cover'
+                    }}
+                    src={`http://localhost:5000/${message.text as string}`}
+                    key={message.id} alt='image'>
+                  </img>
+                </a>
               : <a
                 style={{
                   maxHeight: '300px',
@@ -36,8 +42,8 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
                 href={`http://localhost:5000/${message.text as string}`}
                 key={message.id}>
                 <Button variant='outlined'>
-                    <FileOpenIcon sx ={{ mr: 2 }}/>
-                    Download file - {getExtension(message.text)}
+                    Download file .{getExtension(message.text)}
+                    <FileOpenIcon sx ={{ ml: 2 }}/>
                 </Button>
             </a>
         }

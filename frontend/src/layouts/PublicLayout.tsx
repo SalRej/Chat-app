@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
+import AuthContext from '../context/AuthContext'
+import Loading from '../components/Loading'
 
 const PublicLayout = (): JSX.Element => {
-  const token = localStorage.getItem('token')
+  const { user, isLoading } = useContext(AuthContext)
 
-  if (token) {
-    return <Navigate to='/chat'/>
+  if (isLoading) {
+    return <Loading />
   }
+
+  if (user) {
+    return <Navigate to="/chat"/>
+  }
+
   return (
     <Outlet />
   )
