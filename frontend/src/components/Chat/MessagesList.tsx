@@ -10,7 +10,7 @@ interface Props {
 }
 const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
   return (
-    <Stack spacing={1} sx={{ overflowY: 'scroll', flexGrow: 1 }}>
+    <Stack sx={{ overflowY: 'scroll', flex: '1 1 0' }}>
     {
         messages.length === 0
           ? <Typography textAlign='center'>Say hi to {userToChat?.name}</Typography>

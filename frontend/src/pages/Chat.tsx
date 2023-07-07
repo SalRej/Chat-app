@@ -12,14 +12,14 @@ const Chat = (): JSX.Element => {
   return (
     <Stack sx={{ height: '100vh', width: '100%' }}>
       <Header />
-      <Grid container sx={{ height: '100%', flexGrow: 1 }}>
-        <Grid item xs={3}>
-          <UsersList setUserToChat={setUserToChat}/>
+        <Grid container sx={{ height: '100%', flexGrow: 1 }}>
+          <Grid item xs={3}>
+            <UsersList setUserToChat={setUserToChat}/>
+          </Grid>
+          <Grid item xs={9} sx={{ height: '100%' }}>
+            <Messages userToChat={userToChat}/>
+          </Grid>
         </Grid>
-        <Grid item xs={9} sx={{ height: '100%' }}>
-          <Messages userToChat={userToChat}/>
-        </Grid>
-      </Grid>
     </Stack>
   )
 }

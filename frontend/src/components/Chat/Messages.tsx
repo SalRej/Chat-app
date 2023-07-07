@@ -31,10 +31,6 @@ const Messages = ({ userToChat }: Props): JSX.Element => {
       return await axiosInstance.post('/message', {
         messageText: textMessage,
         recieverId
-      }, {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token') as string}`
-        }
       })
     },
     onSettled: () => {

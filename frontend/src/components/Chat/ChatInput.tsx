@@ -23,7 +23,7 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
   }
 
   return (
-    <Box sx={{ width: '100%', flexGrow: 1 }}>
+    <Box sx={{ width: '100%' }}>
         <Divider variant="middle" />
         <Stack direction='row' sx={{ width: '100%', pt: 3 }}>
             <Stack direction='row' sx={{ width: '100%' }}>
