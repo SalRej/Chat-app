@@ -1,10 +1,10 @@
-import { Avatar, Stack, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import React, { useRef, useEffect, useContext } from 'react'
 import TextMessage from './TextMessage'
 import FileMessage from './FileMessage'
 import type User from '../../interfaces/User'
-import { blue } from '@mui/material/colors'
 import AuthContext from '../../context/AuthContext'
+import ChatAvatar from './ChatAvatar'
 
 interface Props {
   messages: any[]
@@ -37,7 +37,7 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
                     alignItems="center"
                     spacing={1}
                   >
-                    <Avatar sx={{ bgcolor: blue[500] }}>{isSender ? user?.name[0].toUpperCase() : userToChat?.name[0].toUpperCase()}</Avatar>
+                      <ChatAvatar user={user} userToChat={userToChat} isSender={isSender} />
                       { message.isImage &&
                         <FileMessage
                           message={message}

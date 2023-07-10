@@ -21,11 +21,7 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
   }
 
   const changeChattingUser = (user: User): void => {
-    setUserToChat({
-      name: user.name,
-      id: user.id,
-      email: user.email
-    })
+    setUserToChat(user)
   }
 
   return (
