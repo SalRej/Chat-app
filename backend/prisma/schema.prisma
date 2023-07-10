@@ -18,6 +18,7 @@ model User {
   todos            Todo[]
   sentMessages     Message[] @relation("Sender")
   recievedMessages Message[] @relation("Reciever")
+  profileImageUrl  String?
 }
 
 model Todo {

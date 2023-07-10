@@ -44,7 +44,8 @@ export const getUserSchema = {
         properties: {
           name: { type: 'string' },
           email: { type: 'string' },
-          id: { type: 'string' }
+          id: { type: 'string' },
+          profileImageUrl: { type: 'string' }
         }
       }
     }
@@ -70,7 +71,8 @@ export const loginUserSchema = {
             properties: {
               name: { type: 'string' },
               email: { type: 'string' },
-              id: { type: 'string' }
+              id: { type: 'string' },
+              profileImageUrl: { type: 'string' }
             }
           },
           token: { type: 'string' }
@@ -121,6 +123,20 @@ export const getAllOtherUsersSchema = {
             }
           }
         }
+      }
+    }
+  }
+}
+
+export const updateUserSchema = {
+  schema: {
+    body: {
+      type: 'object',
+      properties: {
+        email: { type: 'string' },
+        name: { type: 'string' },
+        password: { type: 'string' },
+        confirmPassword: { type: 'string' }
       }
     }
   }

@@ -10,6 +10,7 @@ import Chat from './pages/Chat'
 import { AuthProvider } from './context/AuthContext'
 import { ToastContainer } from 'react-toastify'
 import { CssBaseline } from '@mui/material'
+import Profile from './pages/Profile'
 const queryClient = new QueryClient()
 
 const App = (): JSX.Element => {
@@ -27,6 +28,7 @@ const App = (): JSX.Element => {
             <Route element={<PrivateLayout />}>
               <Route path='/todo' element={<Todos />}></Route>
               <Route path='/chat' element={<Chat />}></Route>
+              <Route path='/profile' element={<Profile />}></Route>
             </Route>
           </Routes>
           <CssBaseline />

@@ -1,8 +1,9 @@
 import { type FastifyInstance, type FastifyRequest } from 'fastify'
 import { createUserSchema, getAllOtherUsersSchema, getUserSchema, loginUserSchema } from '../schemas/user'
-import { createUserHandler, getAllOtherUsersHandler, getUserHandler, loginUserHandler } from '../controllers/user'
+import { createUserHandler, getAllOtherUsersHandler, getUserHandler, loginUserHandler, updateUserHanlder } from '../controllers/user'
 import verifyToken from '../controllers/auth/verifyToken'
 import { type ITokenHeader } from '../interfaces/user'
+import upload from '../config/multer'
 
 export const userPublicRoutes = (
   fastify: FastifyInstance,
@@ -24,5 +25,6 @@ export const userPrivateRoutes = (
   })
   fastify.get('/user', getUserSchema, getUserHandler)
   fastify.get('/users', getAllOtherUsersSchema, getAllOtherUsersHandler)
+  fastify.put('/user', { preHandler: upload.single('image') }, updateUserHanlder)
   done()
 }

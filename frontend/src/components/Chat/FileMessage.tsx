@@ -14,26 +14,27 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
 
   return (
     <>
-        {
-            imageExtentions.includes(getExtension(message.text))
-              ? <a style={{
-                alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
-                maxHeight: '300px',
-                maxWidth: '30%'
-              }} href={`http://localhost:5000/${message.text as string}`} target='_blank' rel="noreferrer">
-                  <img
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '12px',
-                      objectFit: 'cover'
-                    }}
-                    loading='lazy'
-                    src={`http://localhost:5000/${message.text as string}`}
-                    key={message.id} alt='image'>
-                  </img>
-                </a>
-              : <a
+      {
+        imageExtentions.includes(getExtension(message.text))
+          ? <a style={{
+            alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
+            display: 'block',
+            height: '300px',
+            maxWidth: '30%'
+          }} href={`http://localhost:5000/${message.text as string}`} target='_blank' rel="noreferrer">
+              <img
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '12px',
+                  objectFit: 'cover'
+                }}
+                loading='lazy'
+                src={`http://localhost:5000/${message.text as string}`}
+                key={message.id} alt='image'>
+              </img>
+          </a>
+          : <a
                 style={{
                   maxHeight: '300px',
                   maxWidth: '40%',
@@ -47,7 +48,7 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
                     <FileOpenIcon sx ={{ ml: 2 }}/>
                 </Button>
             </a>
-        }
+      }
     </>
   )
 }

@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken'
 import type IUser from '../interfaces/user'
 import { type ITokenHeader } from '../interfaces/user'
 import { PrismaClient } from '@prisma/client'
+import fs from 'fs'
+
 const prisma = new PrismaClient()
 
 export const createUserHandler = async (
@@ -158,5 +160,54 @@ export const getAllOtherUsersHandler = async (
     return await res.code(200).send(otherUsers)
   } else {
     return await res.code(400).send({ message: 'Could not retrieve the users' })
+  }
+}
+
+export const updateUserHanlder = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: any }>,
+  res: FastifyReply
+): Promise<void> => {
+  const file: any = req.file
+  const { email } = req.headers
+  const { email: newEmail, name, password, confirmPassword } = req.body as any
+
+  if (password !== confirmPassword && (password || confirmPassword)) {
+    return await res.code(409).send({ message: 'Passwords do not match!' })
+  }
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  if (file?.filename) {
+    const user = await prisma.user.findUnique({ where: { email } })
+    const prevImageUrl = user?.profileImageUrl
+    const updatedUser = await prisma.user.update({
+      where: {
+        email
+      },
+      data: {
+        email: newEmail,
+        name,
+        password: hashedPassword,
+        profileImageUrl: `public/uploads/${file.filename as string}`
+      }
+    })
+
+    if (updatedUser && prevImageUrl) {
+      fs.unlink(prevImageUrl, (error) => {
+        console.log(error)
+      })
+    }
+    return await res.code(201).send(updatedUser)
+  } else {
+    const updatedUser = await prisma.user.update({
+      where: {
+        email
+      },
+      data: {
+        email: newEmail,
+        name,
+        password: hashedPassword
+      }
+    })
+    return await res.code(201).send(updatedUser)
   }
 }

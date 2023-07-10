@@ -35,7 +35,7 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
                     key={message.id}
                     direction={isSender ? 'row-reverse' : 'row'}
                     alignItems="center"
-                    spacing={2}
+                    spacing={1}
                   >
                     <Avatar sx={{ bgcolor: blue[500] }}>{isSender ? user?.name[0].toUpperCase() : userToChat?.name[0].toUpperCase()}</Avatar>
                       { message.isImage &&
