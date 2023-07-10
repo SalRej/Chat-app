@@ -42,7 +42,7 @@ const useAuth = (): Auth => {
   }, [])
 
   return {
-    user, logIn, logOut, isLoading
+    user, logIn, logOut, isLoading, setUser
   }
 }
 

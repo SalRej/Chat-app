@@ -24,7 +24,6 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
 
   const onSubmit = (e: any): void => {
     e.preventDefault()
-    console.log(userToChat)
     sendMessage({
       textMessage,
       recieverId: userToChat.id

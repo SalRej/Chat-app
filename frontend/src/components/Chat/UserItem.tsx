@@ -15,7 +15,11 @@ const UserItem = ({ user, changeChattingUser }: any): JSX.Element => {
     <>
         <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
             <ListItemIcon>
-            <Avatar sx={{ bgcolor: blue[500] }}>{user.name[0].toUpperCase()}</Avatar>
+              {
+                user?.profileImageUrl
+                  ? <Avatar alt="Remy Sharp" src={`http://localhost:5000/${user?.profileImageUrl as string}`} />
+                  : <Avatar sx={{ bgcolor: blue[500] }}>{user.name[0].toUpperCase()}</Avatar>
+              }
             </ListItemIcon>
             <ListItemText primary={
               <Stack direction="row" justifyContent="space-between">

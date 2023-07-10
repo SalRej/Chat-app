@@ -99,6 +99,7 @@ export const getAllOtherUsersSchema = {
             name: { type: 'string' },
             email: { type: 'string' },
             id: { type: 'string' },
+            profileImageUrl: { type: 'string' },
             sentMessages: {
               type: 'array',
               items: {

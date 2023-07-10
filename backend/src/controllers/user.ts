@@ -174,7 +174,11 @@ export const updateUserHanlder = async (
   if (password !== confirmPassword && (password || confirmPassword)) {
     return await res.code(409).send({ message: 'Passwords do not match!' })
   }
-  const hashedPassword = await bcrypt.hash(password, 10)
+
+  let hashedPassword
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, 10)
+  }
 
   if (file?.filename) {
     const user = await prisma.user.findUnique({ where: { email } })
