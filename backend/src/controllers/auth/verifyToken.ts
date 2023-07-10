@@ -19,7 +19,9 @@ const verifyToken = async (
     }
 
     if (decoded) {
-      req.headers.email = decoded as string
+      const decodedData = decoded as { email: string, id: string }
+      req.headers.email = decodedData.email
+      req.headers.id = decodedData.id
     }
   })
 

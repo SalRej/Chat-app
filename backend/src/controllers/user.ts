@@ -18,11 +18,11 @@ export const createUserHandler = async (
   })
 
   if (confirmPassword !== password) {
-    return await res.code(409).send('Passwords do not match')
+    return await res.code(409).send({ message: 'Passwords do not match' })
   }
 
   if (doesUserExist) {
-    return await res.code(409).send('Such a user already exists')
+    return await res.code(409).send({ message: 'Such a user already exists' })
   }
 
   try {
@@ -36,7 +36,11 @@ export const createUserHandler = async (
       }
     })
 
-    const token = jwt.sign(email, process.env.JWT_SECRET ?? '')
+    const signature = {
+      email,
+      id: newUser.id
+    }
+    const token = jwt.sign(signature, process.env.JWT_SECRET ?? '')
 
     const payload = {
       user: newUser,
@@ -63,7 +67,7 @@ export const getUserHandler = async (
   if (user) {
     return await res.code(200).send(user)
   } else {
-    return await res.code(400).send('Could not retrieve the user')
+    return await res.code(400).send({ message: 'Could not retrieve the user' })
   }
 }
 
@@ -83,29 +87,69 @@ export const loginUserHandler = async (
     const result = await bcrypt.compare(password, user.password)
 
     if (result) {
-      const token = jwt.sign(email, process.env.JWT_SECRET ?? '')
+      const signature = {
+        email,
+        id: user.id
+      }
+
+      const token = jwt.sign(signature, process.env.JWT_SECRET ?? '')
       return await res.code(200).send({
         user,
         token
       })
     } else {
-      return await res.code(409).send('Wrong passowrd')
+      return await res.code(409).send({ message: 'Wrong passowrd' })
     }
   }
 
-  return await res.code(400).send('There is no such email')
+  return await res.code(400).send({ message: 'There is no such email' })
 }
 
 export const getAllOtherUsersHandler = async (
   req: FastifyRequest<{ Headers: ITokenHeader }>,
   res: FastifyReply
 ): Promise<void> => {
-  const { email } = req.headers
+  const { email, id } = req.headers
 
+  // console.log(id, email)
   const otherUsers = await prisma.user.findMany({
     where: {
       email: {
         not: email
+      }
+    },
+    include: {
+      sentMessages: {
+        select: {
+          text: true,
+          createdAt: true,
+          isImage: true
+        },
+        where: {
+          OR: [
+            { reciever: { id } },
+            { sender: { id } }
+          ]
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      },
+      recievedMessages: {
+        select: {
+          text: true,
+          createdAt: true,
+          isImage: true
+        },
+        where: {
+          OR: [
+            { reciever: { id } },
+            { sender: { id } }
+          ]
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
       }
     }
   })
@@ -113,6 +157,6 @@ export const getAllOtherUsersHandler = async (
   if (otherUsers) {
     return await res.code(200).send(otherUsers)
   } else {
-    return await res.code(400).send('Could not retrieve the users')
+    return await res.code(400).send({ message: 'Could not retrieve the users' })
   }
 }

@@ -35,7 +35,6 @@ const startServer = (): void => {
 
   const publicPath = path.join(process.cwd(), 'public')
 
-  console.log(publicPath)
   server.register(cors, {})
   server.register(multipart)
   server.register(fastifyStatic, {

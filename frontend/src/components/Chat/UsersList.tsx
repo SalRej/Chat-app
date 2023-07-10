@@ -1,21 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import React, { type Dispatch, type SetStateAction } from 'react'
 import axiosInstance from '../../config/axiosInstance'
-import { List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material'
-import PersonIcon from '@mui/icons-material/Person'
+import { List, Paper } from '@mui/material'
 import type User from '../../interfaces/User'
+import UserItem from './UserItem'
 
 interface Props {
   setUserToChat: Dispatch<SetStateAction<User | null>>
 }
+
 const UsersList = ({ setUserToChat }: Props): JSX.Element => {
   const { data: users, isLoading } = useQuery({
     queryFn: async () => {
-      return await axiosInstance.get('/users', {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem('token') as string}`
-        }
-      })
+      return await axiosInstance.get('/users')
     }
   })
 
@@ -31,16 +28,12 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
     })
   }
 
+  console.log(users)
   return (
     <Paper elevation={4} sx={{ height: '100%' }}>
       <List>
         {users?.data.map((user: any) => (
-          <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
-            <ListItemIcon>
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary={user.name} />
-          </ListItemButton>
+          <UserItem key={user.id} user={user} changeChattingUser={changeChattingUser}/>
         ))}
       </List>
     </Paper>

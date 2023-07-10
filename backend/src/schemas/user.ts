@@ -96,7 +96,29 @@ export const getAllOtherUsersSchema = {
           properties: {
             name: { type: 'string' },
             email: { type: 'string' },
-            id: { type: 'string' }
+            id: { type: 'string' },
+            sentMessages: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  text: { type: 'string' },
+                  createdAt: { type: 'string' },
+                  isImage: { type: 'boolean' }
+                }
+              }
+            },
+            recievedMessages: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  text: { type: 'string' },
+                  createdAt: { type: 'string' },
+                  isImage: { type: 'boolean' }
+                }
+              }
+            }
           }
         }
       }

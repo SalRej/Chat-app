@@ -9,33 +9,25 @@ export const getMessagesHandler = async (
   req: FastifyRequest<{ Headers: ITokenHeader, Params: { chattingUserId: string } }>,
   res: FastifyReply
 ): Promise<void> => {
-  const { email } = req.headers
+  const { id } = req.headers
   const { chattingUserId } = req.params
 
-  const user = await prisma.user.findUnique({
+  const messages = await prisma.message.findMany({
     where: {
-      email
+      OR: [
+        { recieverId: id, senderId: chattingUserId },
+        { recieverId: chattingUserId, senderId: id }
+      ]
+    },
+    orderBy: {
+      createdAt: 'asc'
     }
   })
 
-  if (user) {
-    const messages = await prisma.message.findMany({
-      where: {
-        OR: [
-          { recieverId: user.id, senderId: chattingUserId },
-          { recieverId: chattingUserId, senderId: user.id }
-        ]
-      },
-      orderBy: {
-        createdAt: 'asc'
-      }
-    })
-
-    if (messages) {
-      return await res.code(200).send(messages)
-    } else {
-      return await res.code(200).send([])
-    }
+  if (messages) {
+    return await res.code(200).send(messages)
+  } else {
+    return await res.code(200).send([])
   }
 }
 

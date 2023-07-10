@@ -19,7 +19,7 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
   }, [messages.length, userToChat])
 
   return (
-    <Stack spacing={2} sx={{ overflowY: 'scroll', flex: '1 1 0' }} ref={lastMessageRef}>
+    <Stack spacing={2} sx={{ overflowY: 'scroll', flex: '1 1 0', pb: 2 }} ref={lastMessageRef}>
       {messages.length === 0
         ? (
         <Typography textAlign="center">Say hi to {userToChat?.name}</Typography>
