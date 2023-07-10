@@ -1,27 +1,33 @@
-import { Avatar, Chip } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import { blue, grey } from '@mui/material/colors'
 import React from 'react'
 
 const TextMessage = ({ userToChat, index, message }: any): JSX.Element => {
+  const isSender = message.senderId !== userToChat.id
   return (
-    <Chip
+    <Box
         sx={{
           marginTop: index === 0 ? 'auto' : 'inherit',
           maxWidth: '50%',
           padding: '0.5em 0.4em',
-          alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
+          alignSelf: isSender ? 'flex-end' : 'flex-start',
           height: 'auto',
           '& .MuiChip-label': {
             display: 'block',
             whiteSpace: 'normal'
           }
         }}
-        size="medium"
-        variant={message.senderId === userToChat.id ? 'outlined' : 'filled'}
-        color={'primary'}
-        key={message.id}
-        label={message.text}
-        avatar={<Avatar>{userToChat.name[0].toUpperCase()}</Avatar>}
-    />
+    >
+        <Typography
+          borderRadius={3}
+          color={isSender ? 'white' : 'black'}
+          px={2}
+          py={1}
+          bgcolor={isSender ? blue[500] : grey[200]}
+        >
+            {message.text}
+        </Typography>
+    </Box>
   )
 }
 

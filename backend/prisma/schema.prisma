@@ -31,7 +31,7 @@ model Todo {
 
 model Message {
   id         String   @id @default(uuid())
-  text       String
+  text       String   @db.Text
   sender     User     @relation("Sender", fields: [senderId], references: [id])
   senderId   String
   reciever   User     @relation("Reciever", fields: [recieverId], references: [id])

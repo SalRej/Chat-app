@@ -28,7 +28,6 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
     })
   }
 
-  console.log(users)
   return (
     <Paper elevation={4} sx={{ height: '100%' }}>
       <List>

@@ -1,5 +1,5 @@
 import { ListItemButton, ListItemIcon, Avatar, ListItemText, Typography, Divider, Stack } from '@mui/material'
-import { deepOrange } from '@mui/material/colors'
+import { blue } from '@mui/material/colors'
 import React from 'react'
 
 const UserItem = ({ user, changeChattingUser }: any): JSX.Element => {
@@ -7,17 +7,24 @@ const UserItem = ({ user, changeChattingUser }: any): JSX.Element => {
   const lastRecievedMessageDate = new Date(user.recievedMessages[0]?.createdAt ?? 0)
 
   const lastMessage = lastSentMessageDate > lastRecievedMessageDate ? user.sentMessages[0] : user.recievedMessages[0]
+
+  const options: Intl.DateTimeFormatOptions = ({ weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })
+  const formater = new Intl.DateTimeFormat('en-US', options)
+  const date = lastMessage ? formater.format(new Date(lastMessage.createdAt)) : ''
   return (
     <>
         <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
             <ListItemIcon>
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>{user.name[0].toUpperCase()}</Avatar>
+            <Avatar sx={{ bgcolor: blue[500] }}>{user.name[0].toUpperCase()}</Avatar>
             </ListItemIcon>
             <ListItemText primary={
+              <Stack direction="row" justifyContent="space-between">
                 <Stack>
                     <Typography>{user.name}</Typography>
                     <Typography color={'GrayText'}>{lastMessage?.isImage ? 'File sent' : lastMessage?.text ?? 'No messages'}</Typography>
                 </Stack>
+                <Typography fontSize={12} color={'GrayText'}>{date}</Typography>
+              </Stack>
             } />
         </ListItemButton>
         <Divider variant="middle" />
