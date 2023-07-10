@@ -125,7 +125,8 @@ export const getAllOtherUsersHandler = async (
         select: {
           text: true,
           createdAt: true,
-          isImage: true
+          isImage: true,
+          senderId: true
         },
         where: {
           OR: [
