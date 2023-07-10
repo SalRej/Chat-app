@@ -21,7 +21,12 @@ const UserItem = ({ user, changeChattingUser }: any): JSX.Element => {
               <Stack direction="row" justifyContent="space-between">
                 <Stack>
                     <Typography>{user.name}</Typography>
-                    <Typography color={'GrayText'}>{lastMessage?.isImage ? 'File sent' : lastMessage?.text ?? 'No messages'}</Typography>
+                    <Typography sx={{
+                      display: '-webkit-box',
+                      overflow: 'hidden',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 3
+                    }} color={'GrayText'}>{lastMessage?.isImage ? 'File sent' : lastMessage?.text ?? 'No messages'}</Typography>
                 </Stack>
                 <Typography fontSize={12} color={'GrayText'}>{date}</Typography>
               </Stack>
