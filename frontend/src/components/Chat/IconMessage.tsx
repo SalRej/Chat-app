@@ -15,7 +15,7 @@ const IconMessage = ({ message, userToChat }: Props): JSX.Element => {
   return (
     <>
       <Box>
-        {iconToRender && <iconToRender.component color="primary" fontSize="large" sx={{ mx: 1 }} {...iconProps}/>}
+        {iconToRender && <iconToRender.component color="primary" fontSize="large" {...iconProps}/>}
       </Box>
     </>
   )

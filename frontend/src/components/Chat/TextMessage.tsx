@@ -1,8 +1,9 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Link, Typography } from '@mui/material'
 import { blue, grey } from '@mui/material/colors'
 import React from 'react'
 import type User from '../../interfaces/User'
 import type Message from '../../interfaces/Message'
+import isValidHttpUrl from '../../utilis/isValidHttpUrl'
 
 interface Props {
   userToChat: User | null
@@ -11,7 +12,6 @@ interface Props {
 }
 const TextMessage = ({ userToChat, index, message }: Props): JSX.Element => {
   const isSender = message.senderId !== userToChat?.id
-  console.log(message.text)
   return (
     <Box
         sx={{
@@ -33,7 +33,7 @@ const TextMessage = ({ userToChat, index, message }: Props): JSX.Element => {
           py={1}
           bgcolor={isSender ? blue[500] : grey[200]}
         >
-            {message.text}
+            {isValidHttpUrl(message.text) ? <Link target="_blank" href={message.text} sx={{ cursor: 'pointer', color: isSender ? 'white' : blue[500] }}>{message.text}</Link> : message.text}
         </Typography>
     </Box>
   )

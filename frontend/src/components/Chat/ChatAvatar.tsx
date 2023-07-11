@@ -6,11 +6,11 @@ const ChatAvatar = ({ user, userToChat, isSender }: any): JSX.Element => {
   if (isSender) {
     return (
     <React.Fragment>
-        {
-            user?.profileImageUrl
-              ? <Avatar src={`http://localhost:5000/${user?.profileImageUrl as string}`}/>
-              : <Avatar sx={{ bgcolor: blue[500] }}>{user?.name[0].toUpperCase()}</Avatar>
-        }
+      {
+          user?.profileImageUrl
+            ? <Avatar src={`http://localhost:5000/${user?.profileImageUrl as string}`} sx={{ alignSelf: 'flex-end' }}/>
+            : <Avatar sx={{ bgcolor: blue[500], alignSelf: 'flex-end' }}>{user?.name[0].toUpperCase()}</Avatar>
+      }
     </React.Fragment>
     )
   }
@@ -19,8 +19,8 @@ const ChatAvatar = ({ user, userToChat, isSender }: any): JSX.Element => {
     <React.Fragment>
     {
         userToChat?.profileImageUrl
-          ? <Avatar src={`http://localhost:5000/${userToChat?.profileImageUrl as string}`}/>
-          : <Avatar sx={{ bgcolor: blue[500] }}>{userToChat?.name[0].toUpperCase()}</Avatar>
+          ? <Avatar src={`http://localhost:5000/${userToChat?.profileImageUrl as string}`} sx={{ alignSelf: 'flex-end' }}/>
+          : <Avatar sx={{ bgcolor: blue[500], alignSelf: 'flex-end' }}>{userToChat?.name[0].toUpperCase()}</Avatar>
     }
     </React.Fragment>
   )
