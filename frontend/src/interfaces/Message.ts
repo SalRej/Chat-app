@@ -6,6 +6,8 @@ interface Message {
   recieverId: string
   createdAt: string
   id: string
+  isText: boolean
+  isIcon: boolean
 }
 
 export default Message

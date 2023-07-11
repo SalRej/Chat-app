@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import UsersList from '../components/Chat/UsersList'
 import { Grid, Stack } from '@mui/material'
-import Messages from '../components/Chat/Messages'
+import ChatRoom from '../components/Chat/ChatRoom'
 import type User from '../interfaces/User'
 import Header from '../components/Header'
 
@@ -17,7 +17,7 @@ const Chat = (): JSX.Element => {
           <UsersList setUserToChat={setUserToChat}/>
         </Grid>
         <Grid item xs={9} sx={{ height: '100%' }}>
-          <Messages userToChat={userToChat}/>
+          <ChatRoom userToChat={userToChat}/>
         </Grid>
       </Grid>
     </Stack>

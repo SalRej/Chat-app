@@ -1,9 +1,17 @@
 import { Box, Typography } from '@mui/material'
 import { blue, grey } from '@mui/material/colors'
 import React from 'react'
+import type User from '../../interfaces/User'
+import type Message from '../../interfaces/Message'
 
-const TextMessage = ({ userToChat, index, message }: any): JSX.Element => {
-  const isSender = message.senderId !== userToChat.id
+interface Props {
+  userToChat: User | null
+  index: number
+  message: Message
+}
+const TextMessage = ({ userToChat, index, message }: Props): JSX.Element => {
+  const isSender = message.senderId !== userToChat?.id
+  console.log(message.text)
   return (
     <Box
         sx={{

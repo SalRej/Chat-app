@@ -11,6 +11,8 @@ export const getMessagesSchema = {
             senderId: { type: 'string' },
             recieverId: { type: 'string' },
             isImage: { type: 'boolean' },
+            isIcon: { type: 'boolean' },
+            isText: { type: 'boolean' },
             id: { type: 'string' }
           }
         }

@@ -40,4 +40,6 @@ model Message {
   createdAt  DateTime @default(now())
   isImage    Boolean  @default(false)
   isSeen     Boolean  @default(false)
+  isIcon     Boolean  @default(false)
+  isText     Boolean  @default(false)
 }

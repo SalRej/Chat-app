@@ -7,9 +7,11 @@ import AuthContext from '../../context/AuthContext'
 import ChatAvatar from './ChatAvatar'
 import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '../../config/axiosInstance'
+import type Message from '../../interfaces/Message'
+import IconMessage from './IconMessage'
 
 interface Props {
-  messages: any[]
+  messages: Message[]
   userToChat: User | null
 }
 
@@ -42,10 +44,17 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
     <Stack spacing={2} sx={{ overflowY: 'scroll', flex: '1 1 0', pb: 2 }} ref={lastMessageRef}>
       { messages.length === 0
         ? (
-            <Typography textAlign="center">Say hi to {userToChat?.name}</Typography>
+            <Stack justifyContent="center" alignItems="center" flexGrow={1} spacing={2}>
+              <img
+                src={userToChat?.profileImageUrl ? `http://localhost:5000/${userToChat?.profileImageUrl}` : 'default_user.png'}
+                alt='user avatar'
+                style={{ objectFit: 'cover', display: 'block', width: '30%', height: 'auto', borderRadius: '50%' }}>
+              </img>
+              <Typography variant='h3' textAlign="center">Say Hi to {userToChat?.name}</Typography>
+            </Stack>
           )
         : (
-            messages.map((message: any, index: number) => {
+            messages.map((message: Message, index: number) => {
               const isSender = message.senderId !== userToChat?.id
               return (
                   <Stack
@@ -55,17 +64,26 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
                     spacing={1}
                   >
                       <ChatAvatar user={user} userToChat={userToChat} isSender={isSender} />
-                      { message.isImage &&
+                      {
+                        message.isText &&
+                        <TextMessage
+                          message={message}
+                          userToChat={userToChat}
+                          index={index}
+                        />
+                      }
+                      {
+                        message.isImage &&
                         <FileMessage
                           message={message}
                           userToChat={userToChat}
                         />
                       }
-                      {!message.isImage &&
-                        <TextMessage
+                      {
+                        message.isIcon &&
+                        <IconMessage
                           message={message}
                           userToChat={userToChat}
-                          index={index}
                         />
                       }
                   </Stack>

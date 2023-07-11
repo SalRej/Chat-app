@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React, { useContext, useEffect, useState } from 'react'
 import axiosInstance from '../../config/axiosInstance'
 import pusher from '../../config/pusher'
@@ -8,16 +8,16 @@ import MessagesList from './MessagesList'
 import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
+import Loading from '../Loading'
 
 interface Props {
   userToChat: User | null
 }
-const Messages = ({ userToChat }: Props): JSX.Element => {
+const ChatRoom = ({ userToChat }: Props): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const [textMessage, setTextMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
 
-  useQuery({
+  const { isLoading } = useQuery({
     queryFn: async () => {
       return await axiosInstance.get(`/message/${userToChat?.id as string}`)
     },
@@ -25,24 +25,6 @@ const Messages = ({ userToChat }: Props): JSX.Element => {
       setMessages(data?.data ?? [])
     },
     queryKey: [userToChat?.id, 'message']
-  })
-
-  const { mutate: sendMessage } = useMutation({
-    mutationFn: async ({ textMessage, recieverId }: { textMessage: string, recieverId: string }) => {
-      return await axiosInstance.post('/message', {
-        messageText: textMessage,
-        recieverId
-      })
-    },
-    onSettled: () => {
-      setTextMessage('')
-    }
-  })
-
-  const { mutate: sendImageMessage } = useMutation({
-    mutationFn: async (formData: any) => {
-      await axiosInstance.post('/message/image', formData)
-    }
   })
 
   useEffect(() => {
@@ -61,6 +43,10 @@ const Messages = ({ userToChat }: Props): JSX.Element => {
     })
   }, [userToChat])
 
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
     <Box
       sx={{
@@ -71,15 +57,9 @@ const Messages = ({ userToChat }: Props): JSX.Element => {
       }}
     >
       <MessagesList userToChat={userToChat} messages={messages} />
-      <ChatInput
-        sendImageMessage={sendImageMessage}
-        sendMessage={sendMessage}
-        textMessage={textMessage}
-        userToChat={userToChat}
-        setTextMessage={setTextMessage}
-      />
+      <ChatInput userToChat={userToChat}/>
     </Box>
   )
 }
 
-export default Messages
+export default ChatRoom

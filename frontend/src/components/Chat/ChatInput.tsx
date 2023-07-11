@@ -2,15 +2,14 @@ import { Stack, TextField, Button, Fab, Divider, Box } from '@mui/material'
 import React from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import type User from '../../interfaces/User'
-
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import useSendMessage from '../../hooks/useSendMessage'
 interface Props {
-  textMessage: string
-  setTextMessage: (text: string) => void
-  sendMessage: ({ textMessage, recieverId }: { textMessage: string, recieverId: string }) => void
-  sendImageMessage: (formaData: FormData) => void
   userToChat: User | null
 }
-const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage, userToChat }: Props): JSX.Element => {
+const ChatInput = ({ userToChat }: Props): JSX.Element => {
+  const { sendImageMessage, sendMessage, setTextMessage, textMessage, sendIconMessage } = useSendMessage()
+
   const handleFabClick = (): void => {
     document.getElementById('fileInput')?.click()
   }
@@ -42,13 +41,29 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
     }
   }
 
+  const handleIconMessageClick = (): void => {
+    if (!userToChat?.id) {
+      return
+    }
+
+    sendIconMessage({
+      textMessage: 'thumbUp',
+      recieverId: userToChat?.id
+    })
+  }
+
   return (
     <Box component="form" sx={{ width: '100%' }} onSubmit={onSubmit}>
         <Divider variant="middle" />
         <Stack spacing={2} direction='row' sx={{ width: '100%', pt: 3 }}>
             <Stack direction='row' sx={{ width: '100%' }}>
-                <TextField value={textMessage} fullWidth size='small' type='text' onChange={updateTextMessage}></TextField>
-                <Button variant='contained'>Send</Button>
+                <TextField
+                  value={textMessage}
+                  fullWidth size='small'
+                  type='text'
+                  onChange={updateTextMessage}
+                ></TextField>
+                <Button variant='contained' sx={{ borderTopRightRadius: '15px', borderBottomRightRadius: '15px' }}>Send</Button>
             </Stack>
             <input
                 id="fileInput"
@@ -61,6 +76,11 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
                 <Fab onClick={handleFabClick} color="primary" aria-label="add" size="small">
                     <CloudUploadIcon />
                 </Fab>
+            </label>
+            <label>
+              <Fab onClick={handleIconMessageClick} color="primary" size="small">
+                <ThumbUpIcon />
+              </Fab>
             </label>
         </Stack>
     </Box>

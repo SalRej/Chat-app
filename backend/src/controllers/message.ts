@@ -39,41 +39,34 @@ export const createMessageHandler = async (
   req: FastifyRequest<{ Headers: ITokenHeader, Body: { messageText: string, recieverId: string } }>,
   res: FastifyReply
 ): Promise<void> => {
-  const { email } = req.headers
+  const { id } = req.headers
   const { recieverId, messageText } = req.body
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email
+  const message = await prisma.message.create({
+    data: {
+      text: messageText,
+      recieverId,
+      senderId: id as string,
+      isText: true
     }
   })
 
-  if (user) {
-    const message = await prisma.message.create({
-      data: {
-        text: messageText,
-        recieverId,
-        senderId: user.id
-      }
+  if (message) {
+    const channel1Name = [id as string, recieverId].sort().join('-')
+    const channel2Name = `messages-${recieverId}`
+
+    pusher.trigger(channel1Name, 'message_sent', {
+      message
     })
 
-    if (message) {
-      const channel1Name = [user.id, recieverId].sort().join('-')
-      const channel2Name = `messages-${recieverId}`
+    pusher.trigger(channel2Name, 'message_recieved', {
+      message,
+      senderId: id as string
+    })
 
-      pusher.trigger(channel1Name, 'message_sent', {
-        message
-      })
-
-      pusher.trigger(channel2Name, 'message_recieved', {
-        message,
-        senderId: user.id
-      })
-
-      return await res.code(200).send(message)
-    } else {
-      return await res.code(200).send('Could not create the message')
-    }
+    return await res.code(200).send(message)
+  } else {
+    return await res.code(200).send('Could not create the message')
   }
 }
 
@@ -89,7 +82,6 @@ export const createMessageWithImageHandler = async (
 
   if (isImageFile(fileName)) {
     const newFileName = generateFileName(getExtension(fileName))
-
     try {
       await sharp(`public/uploads/${fileName}`)
         .resize(300, 300)
@@ -122,9 +114,64 @@ export const createMessageWithImageHandler = async (
     } catch (e) {
       console.log(e)
     }
+  } else {
+    const message = await prisma.message.create({
+      data: {
+        text: `public/uploads/${fileName}`,
+        recieverId,
+        senderId: id as string,
+        isImage: true
+      }
+    })
+
+    if (message) {
+      const channelName = [id as string, recieverId as string].sort().join('-')
+
+      pusher.trigger(channelName, 'message_sent', {
+        message
+      })
+
+      return await res.code(200).send(message)
+    } else {
+      return await res.code(200).send('Could not create the message')
+    }
   }
 }
 
+export const createMessageWithIconHandler = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: { messageText: string, recieverId: string } }>,
+  res: FastifyReply
+): Promise<void> => {
+  const { id } = req.headers
+  const { recieverId, messageText } = req.body
+
+  const message = await prisma.message.create({
+    data: {
+      text: messageText,
+      recieverId,
+      senderId: id as string,
+      isIcon: true
+    }
+  })
+
+  if (message) {
+    const channel1Name = [id as string, recieverId].sort().join('-')
+    const channel2Name = `messages-${recieverId}`
+
+    pusher.trigger(channel1Name, 'message_sent', {
+      message
+    })
+
+    pusher.trigger(channel2Name, 'message_recieved', {
+      message,
+      senderId: id
+    })
+
+    return await res.code(200).send(message)
+  } else {
+    return await res.code(200).send('Could not create the message')
+  }
+}
 export const seenMessageHanlder = async (
   req: FastifyRequest<{ Headers: ITokenHeader, Body: { messageId: string, recieverId: string } }>,
   res: FastifyReply
