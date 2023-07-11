@@ -5,6 +5,10 @@ import type IUser from '../interfaces/user'
 import { type ITokenHeader } from '../interfaces/user'
 import { PrismaClient } from '@prisma/client'
 import fs from 'fs'
+import sharp from 'sharp'
+import isImageFile from '../utilis/isImageFile'
+import generateFileName from '../utilis/generateFileName'
+import getExtension from '../utilis/getExtention'
 
 const prisma = new PrismaClient()
 
@@ -186,27 +190,46 @@ export const updateUserHanlder = async (
     hashedPassword = await bcrypt.hash(password, 10)
   }
 
-  if (file?.filename) {
-    const user = await prisma.user.findUnique({ where: { email } })
-    const prevImageUrl = user?.profileImageUrl
-    const updatedUser = await prisma.user.update({
-      where: {
-        email
-      },
-      data: {
-        email: newEmail,
-        name,
-        password: hashedPassword,
-        profileImageUrl: `public/uploads/${file.filename as string}`
-      }
-    })
+  const fileName = file?.filename as string
 
-    if (updatedUser && prevImageUrl) {
-      fs.unlink(prevImageUrl, (error) => {
+  if (fileName) {
+    if (!isImageFile(fileName)) {
+      return await res.code(409).send({ message: 'Provide an valid image file.' })
+    }
+    try {
+      const newFileName = generateFileName(getExtension(fileName))
+      console.log(newFileName)
+      await sharp(`public/uploads/${fileName}`)
+        .resize(200, 200)
+        .toFile(`public/uploads/${newFileName}`)
+
+      fs.unlink(`public/uploads/${fileName}`, (error) => {
         console.log(error)
       })
+
+      const user = await prisma.user.findUnique({ where: { email } })
+      const prevImageUrl = user?.profileImageUrl
+      const updatedUser = await prisma.user.update({
+        where: {
+          email
+        },
+        data: {
+          email: newEmail,
+          name,
+          password: hashedPassword,
+          profileImageUrl: `public/uploads/${newFileName}`
+        }
+      })
+
+      if (updatedUser && prevImageUrl) {
+        fs.unlink(prevImageUrl, (error) => {
+          console.log(error)
+        })
+      }
+      return await res.code(201).send(updatedUser)
+    } catch (e) {
+      console.log(e)
     }
-    return await res.code(201).send(updatedUser)
   } else {
     const updatedUser = await prisma.user.update({
       where: {

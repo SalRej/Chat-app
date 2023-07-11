@@ -2,7 +2,11 @@ import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { type ITokenHeader } from '../interfaces/user'
 import { PrismaClient } from '@prisma/client'
 import pusher from '../config/pusher'
-
+import sharp from 'sharp'
+import fs from 'fs'
+import isImageFile from '../utilis/isImageFile'
+import generateFileName from '../utilis/generateFileName'
+import getExtension from '../utilis/getExtention'
 const prisma = new PrismaClient()
 
 export const getMessagesHandler = async (
@@ -77,36 +81,46 @@ export const createMessageWithImageHandler = async (
   req: FastifyRequest<{ Headers: ITokenHeader, Body: any }>,
   res: FastifyReply
 ): Promise<void> => {
-  const { email } = req.headers
+  const { id } = req.headers
   const { recieverId } = req.body as any
   const file: any = req.file
-  const user = await prisma.user.findUnique({
-    where: {
-      email
-    }
-  })
-  const fileName = file.filename // Get the file path
 
-  if (user) {
-    const message = await prisma.message.create({
-      data: {
-        text: `public/uploads/${fileName as string}`,
-        recieverId,
-        senderId: user.id,
-        isImage: true
-      }
-    })
+  const fileName = file.filename as string
 
-    if (message) {
-      const channelName = [user.id, recieverId as string].sort().join('-')
+  if (isImageFile(fileName)) {
+    const newFileName = generateFileName(getExtension(fileName))
 
-      pusher.trigger(channelName, 'message_sent', {
-        message
+    try {
+      await sharp(`public/uploads/${fileName}`)
+        .resize(300, 300)
+        .toFile(`public/uploads/${newFileName}`)
+
+      fs.unlink(`public/uploads/${fileName}`, (error) => {
+        console.log(error)
       })
 
-      return await res.code(200).send(message)
-    } else {
-      return await res.code(200).send('Could not create the message')
+      const message = await prisma.message.create({
+        data: {
+          text: `public/uploads/${newFileName}`,
+          recieverId,
+          senderId: id as string,
+          isImage: true
+        }
+      })
+
+      if (message) {
+        const channelName = [id as string, recieverId as string].sort().join('-')
+
+        pusher.trigger(channelName, 'message_sent', {
+          message
+        })
+
+        return await res.code(200).send(message)
+      } else {
+        return await res.code(200).send('Could not create the message')
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 }
