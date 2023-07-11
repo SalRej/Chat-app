@@ -54,10 +54,16 @@ export const createMessageHandler = async (
     })
 
     if (message) {
-      const channelName = [user.id, recieverId].sort().join('-')
+      const channel1Name = [user.id, recieverId].sort().join('-')
+      const channel2Name = `messages-${recieverId}`
 
-      pusher.trigger(channelName, 'message_sent', {
+      pusher.trigger(channel1Name, 'message_sent', {
         message
+      })
+
+      pusher.trigger(channel2Name, 'message_recieved', {
+        message,
+        senderId: user.id
       })
 
       return await res.code(200).send(message)
@@ -103,4 +109,34 @@ export const createMessageWithImageHandler = async (
       return await res.code(200).send('Could not create the message')
     }
   }
+}
+
+export const seenMessageHanlder = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: { messageId: string, recieverId: string } }>,
+  res: FastifyReply
+): Promise<void> => {
+  const { id } = req.headers
+  const { messageId, recieverId } = req.body
+
+  const updatedMessage = await prisma.message.update({
+    where: {
+      id: messageId
+    },
+    data: {
+      isSeen: true
+    }
+  })
+
+  if (updatedMessage) {
+    const channel1Name = `messages-${id as string}`
+    const channel2Name = `messages-${recieverId}`
+
+    pusher.trigger([channel1Name, channel2Name], 'message_seen', {
+      message: updatedMessage,
+      recieverId
+    })
+
+    return await res.code(201).send(updatedMessage)
+  }
+  return await res.code(400).send({ message: 'Could not update message' })
 }

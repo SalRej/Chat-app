@@ -5,6 +5,8 @@ import FileMessage from './FileMessage'
 import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
 import ChatAvatar from './ChatAvatar'
+import { useMutation } from '@tanstack/react-query'
+import axiosInstance from '../../config/axiosInstance'
 
 interface Props {
   messages: any[]
@@ -15,11 +17,26 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
   const lastMessageRef = useRef<HTMLDivElement>(null)
   const { user } = useContext(AuthContext)
 
+  const { mutate: seeMessage } = useMutation({
+    mutationFn: async ({ recieverId, messageId }: { recieverId: string, messageId: string }) => {
+      return await axiosInstance.post('/message/seen', {
+        recieverId,
+        messageId
+      })
+    }
+  })
+
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollTop = lastMessageRef.current.scrollHeight
     }
-  }, [messages.length, userToChat])
+
+    const lastMessage = messages[messages.length - 1]
+
+    if (lastMessage && userToChat?.id && lastMessage.senderId !== user?.id) {
+      seeMessage({ recieverId: userToChat?.id, messageId: lastMessage.id })
+    }
+  }, [messages.length, userToChat?.id])
 
   return (
     <Stack spacing={2} sx={{ overflowY: 'scroll', flex: '1 1 0', pb: 2 }} ref={lastMessageRef}>

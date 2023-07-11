@@ -108,7 +108,9 @@ export const getAllOtherUsersSchema = {
                   text: { type: 'string' },
                   createdAt: { type: 'string' },
                   isImage: { type: 'boolean' },
-                  senderId: { type: 'string' }
+                  senderId: { type: 'string' },
+                  isSeen: { type: 'boolean' },
+                  id: { type: 'string' }
                 }
               }
             },
@@ -119,7 +121,9 @@ export const getAllOtherUsersSchema = {
                 properties: {
                   text: { type: 'string' },
                   createdAt: { type: 'string' },
-                  isImage: { type: 'boolean' }
+                  isImage: { type: 'boolean' },
+                  isSeen: { type: 'boolean' },
+                  id: { type: 'string' }
                 }
               }
             }

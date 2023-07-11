@@ -7,6 +7,7 @@ import ChatInput from './ChatInput'
 import MessagesList from './MessagesList'
 import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
+import type Message from '../../interfaces/Message'
 
 interface Props {
   userToChat: User | null
@@ -14,7 +15,7 @@ interface Props {
 const Messages = ({ userToChat }: Props): JSX.Element => {
   const { user } = useContext(AuthContext)
   const [textMessage, setTextMessage] = useState('')
-  const [messages, setMessages] = useState<any>([])
+  const [messages, setMessages] = useState<Message[]>([])
 
   useQuery({
     queryFn: async () => {

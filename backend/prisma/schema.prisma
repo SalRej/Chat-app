@@ -39,4 +39,5 @@ model Message {
   recieverId String
   createdAt  DateTime @default(now())
   isImage    Boolean  @default(false)
+  isSeen     Boolean  @default(false)
 }

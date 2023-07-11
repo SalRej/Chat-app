@@ -113,7 +113,6 @@ export const getAllOtherUsersHandler = async (
 ): Promise<void> => {
   const { email, id } = req.headers
 
-  // console.log(id, email)
   const otherUsers = await prisma.user.findMany({
     where: {
       email: {
@@ -126,7 +125,9 @@ export const getAllOtherUsersHandler = async (
           text: true,
           createdAt: true,
           isImage: true,
-          senderId: true
+          senderId: true,
+          isSeen: true,
+          id: true
         },
         where: {
           OR: [
@@ -136,13 +137,16 @@ export const getAllOtherUsersHandler = async (
         },
         orderBy: {
           createdAt: 'desc'
-        }
+        },
+        take: 1
       },
       recievedMessages: {
         select: {
           text: true,
           createdAt: true,
-          isImage: true
+          isImage: true,
+          isSeen: true,
+          id: true
         },
         where: {
           OR: [
@@ -152,7 +156,8 @@ export const getAllOtherUsersHandler = async (
         },
         orderBy: {
           createdAt: 'desc'
-        }
+        },
+        take: 1
       }
     }
   })

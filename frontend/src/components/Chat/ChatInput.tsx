@@ -1,8 +1,16 @@
 import { Stack, TextField, Button, Fab, Divider, Box } from '@mui/material'
 import React from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import type User from '../../interfaces/User'
 
-const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage, userToChat }: any): JSX.Element => {
+interface Props {
+  textMessage: string
+  setTextMessage: (text: string) => void
+  sendMessage: ({ textMessage, recieverId }: { textMessage: string, recieverId: string }) => void
+  sendImageMessage: (formaData: FormData) => void
+  userToChat: User | null
+}
+const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage, userToChat }: Props): JSX.Element => {
   const handleFabClick = (): void => {
     document.getElementById('fileInput')?.click()
   }
@@ -12,10 +20,12 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
     const fileInput = event.target.files[0]
 
     const formData = new FormData()
-    formData.append('image', fileInput)
-    formData.append('recieverId', userToChat.id)
 
-    sendImageMessage(formData)
+    if (userToChat) {
+      formData.append('image', fileInput)
+      formData.append('recieverId', userToChat.id)
+      sendImageMessage(formData)
+    }
   }
 
   const updateTextMessage = (event: any): void => {
@@ -24,10 +34,12 @@ const ChatInput = ({ textMessage, setTextMessage, sendMessage, sendImageMessage,
 
   const onSubmit = (e: any): void => {
     e.preventDefault()
-    sendMessage({
-      textMessage,
-      recieverId: userToChat.id
-    })
+    if (userToChat) {
+      sendMessage({
+        textMessage,
+        recieverId: userToChat.id
+      })
+    }
   }
 
   return (
