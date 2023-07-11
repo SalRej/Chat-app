@@ -1,14 +1,24 @@
 import { Stack, TextField, Button, Fab, Divider, Box } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import type User from '../../interfaces/User'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import useSendMessage from '../../hooks/useSendMessage'
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
+import IconsHolder from './IconsHolder'
 interface Props {
   userToChat: User | null
 }
 const ChatInput = ({ userToChat }: Props): JSX.Element => {
   const { sendImageMessage, sendMessage, setTextMessage, textMessage, sendIconMessage } = useSendMessage()
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
+  const handleOpenIconsClick = (event: React.MouseEvent<HTMLElement>): void => {
+    setAnchorEl(anchorEl ? null : event.currentTarget)
+  }
+
+  const [open, setOpen] = useState(Boolean(anchorEl))
 
   const handleFabClick = (): void => {
     document.getElementById('fileInput')?.click()
@@ -41,16 +51,22 @@ const ChatInput = ({ userToChat }: Props): JSX.Element => {
     }
   }
 
-  const handleIconMessageClick = (): void => {
+  const handleIconMessageClick = (iconName: string): void => {
     if (!userToChat?.id) {
       return
     }
 
     sendIconMessage({
-      textMessage: 'thumbUp',
+      textMessage: iconName,
       recieverId: userToChat?.id
     })
   }
+
+  useEffect(() => {
+    if (anchorEl) {
+      setOpen(true)
+    } else (setOpen(false))
+  }, [anchorEl])
 
   return (
     <Box component="form" sx={{ width: '100%' }} onSubmit={onSubmit}>
@@ -78,10 +94,21 @@ const ChatInput = ({ userToChat }: Props): JSX.Element => {
                 </Fab>
             </label>
             <label>
-              <Fab onClick={handleIconMessageClick} color="primary" size="small">
+              <Fab onClick={() => { handleIconMessageClick('ThumbUpIcon') }} color="primary" size="small">
                 <ThumbUpIcon />
               </Fab>
             </label>
+            <label>
+              <Fab onClick={handleOpenIconsClick} color="primary" size="small">
+                <InsertEmoticonIcon />
+              </Fab>
+            </label>
+            <IconsHolder
+              open={open}
+              setOpen={setOpen}
+              anchorEl={anchorEl}
+              handleIconMessageClick={handleIconMessageClick}
+           />
         </Stack>
     </Box>
   )

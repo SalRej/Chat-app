@@ -11,10 +11,11 @@ interface Props {
 
 const IconMessage = ({ message, userToChat }: Props): JSX.Element => {
   const iconToRender = icons[message.text]
+  const iconProps = icons[message.text].props
   return (
     <>
       <Box>
-        {iconToRender && <iconToRender.component color='primary' fontSize="large" sx={{ mx: 1 }}/>}
+        {iconToRender && <iconToRender.component color="primary" fontSize="large" sx={{ mx: 1 }} {...iconProps}/>}
       </Box>
     </>
   )
