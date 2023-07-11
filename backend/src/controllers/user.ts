@@ -125,14 +125,6 @@ export const getAllOtherUsersHandler = async (
     },
     include: {
       sentMessages: {
-        select: {
-          text: true,
-          createdAt: true,
-          isImage: true,
-          senderId: true,
-          isSeen: true,
-          id: true
-        },
         where: {
           OR: [
             { reciever: { id } },
@@ -145,13 +137,6 @@ export const getAllOtherUsersHandler = async (
         take: 1
       },
       recievedMessages: {
-        select: {
-          text: true,
-          createdAt: true,
-          isImage: true,
-          isSeen: true,
-          id: true
-        },
         where: {
           OR: [
             { reciever: { id } },

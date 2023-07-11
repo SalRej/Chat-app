@@ -110,6 +110,8 @@ export const getAllOtherUsersSchema = {
                   isImage: { type: 'boolean' },
                   senderId: { type: 'string' },
                   isSeen: { type: 'boolean' },
+                  isText: { type: 'boolean' },
+                  isIcon: { type: 'boolean' },
                   id: { type: 'string' }
                 }
               }
@@ -123,6 +125,8 @@ export const getAllOtherUsersSchema = {
                   createdAt: { type: 'string' },
                   isImage: { type: 'boolean' },
                   isSeen: { type: 'boolean' },
+                  isText: { type: 'boolean' },
+                  isIcon: { type: 'boolean' },
                   id: { type: 'string' }
                 }
               }

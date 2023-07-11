@@ -3,6 +3,7 @@ import { blue } from '@mui/material/colors'
 import React from 'react'
 import { type Users } from './UsersList'
 import type User from '../../interfaces/User'
+import icons from '../../constants/icons'
 
 interface Props {
   user: Users
@@ -20,6 +21,10 @@ const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
 
   const whoSendIt = lastMessage?.senderId === user.id ? user?.name : 'You'
   const isSeen = lastMessage?.isSeen && whoSendIt !== 'You'
+
+  const IconComponent = icons[lastMessage?.text]?.component
+  const IconProps = icons[lastMessage?.text]?.props
+
   return (
     <>
         <ListItemButton onClick={() => { changeChattingUser(user, lastMessage?.id) }} key={user.id}>
@@ -44,7 +49,13 @@ const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
                       color={!isSeen && whoSendIt !== 'You' ? 'black' : 'GrayText'}
                       fontWeight={!isSeen && whoSendIt !== 'You' ? '600' : 'normal'}
                     >
-                      {whoSendIt}: {lastMessage?.isImage ? 'File sent' : lastMessage?.text ?? 'No messages'}
+                      <Stack direction="row" alignItems="center">
+                        {whoSendIt}:
+                        {lastMessage?.isImage && 'File sent' }
+                        {lastMessage?.isIcon && <IconComponent {...IconProps} /> }
+                        {lastMessage?.isText && lastMessage?.text}
+                        {!lastMessage?.text ? 'No messages' : null}
+                      </Stack>
                     </Typography>
                 </Stack>
                 <Stack justifyContent='space-between'>
