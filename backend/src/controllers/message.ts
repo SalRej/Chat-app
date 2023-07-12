@@ -10,23 +10,44 @@ import getExtension from '../utilis/getExtention'
 const prisma = new PrismaClient()
 
 export const getMessagesHandler = async (
-  req: FastifyRequest<{ Headers: ITokenHeader, Params: { chattingUserId: string } }>,
+  req: FastifyRequest<{ Headers: ITokenHeader, Params: { chattingUserId: string, lastMessageId: string } }>,
   res: FastifyReply
 ): Promise<void> => {
   const { id } = req.headers
-  const { chattingUserId } = req.params
+  const { chattingUserId, lastMessageId } = req.params
 
-  const messages = await prisma.message.findMany({
-    where: {
-      OR: [
-        { recieverId: id, senderId: chattingUserId },
-        { recieverId: chattingUserId, senderId: id }
-      ]
-    },
-    orderBy: {
-      createdAt: 'asc'
-    }
-  })
+  let messages
+  if (lastMessageId) {
+    messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          { recieverId: id, senderId: chattingUserId },
+          { recieverId: chattingUserId, senderId: id }
+        ]
+      },
+      take: 3,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      cursor: {
+        id: lastMessageId
+      },
+      skip: 1
+    })
+  } else {
+    messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          { recieverId: id, senderId: chattingUserId },
+          { recieverId: chattingUserId, senderId: id }
+        ]
+      },
+      take: 3,
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  }
 
   if (messages) {
     return await res.code(200).send(messages)

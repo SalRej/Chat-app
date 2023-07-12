@@ -10,7 +10,7 @@ export const messagesRoutes = async (fastify: FastifyInstance, options: any, don
     verifyToken(req, res, done)
   })
 
-  fastify.get('/message/:chattingUserId', getMessagesSchema, getMessagesHandler)
+  fastify.get('/message/:chattingUserId/:lastMessageId', getMessagesSchema, getMessagesHandler)
   fastify.post('/message', createMessageSchema, createMessageHandler)
 
   fastify.post('/message/image', { preHandler: upload.single('image') }, createMessageWithImageHandler)
