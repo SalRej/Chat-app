@@ -1,9 +1,10 @@
-import { ListItemButton, ListItemIcon, Avatar, ListItemText, Typography, Divider, Stack } from '@mui/material'
-import { blue } from '@mui/material/colors'
+import { ListItemButton, ListItemIcon, ListItemText, Typography, Divider, Stack } from '@mui/material'
+
 import React from 'react'
 import { type Users } from './UsersList'
 import type User from '../../interfaces/User'
 import icons from '../../constants/icons'
+import UserItemAvatar from './UserItemAvatar'
 
 interface Props {
   user: Users
@@ -29,11 +30,7 @@ const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
     <>
         <ListItemButton onClick={() => { changeChattingUser(user, lastMessage?.id) }} key={user.id}>
             <ListItemIcon>
-              {
-                user?.profileImageUrl
-                  ? <Avatar alt="Remy Sharp" src={`http://localhost:5000/${user?.profileImageUrl}`} />
-                  : <Avatar sx={{ bgcolor: blue[500] }}>{user.name[0].toUpperCase()}</Avatar>
-              }
+              <UserItemAvatar user={user}/>
             </ListItemIcon>
             <ListItemText primary={
               <Stack direction="row" justifyContent="space-between">

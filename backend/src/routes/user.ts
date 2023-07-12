@@ -1,6 +1,6 @@
 import { type FastifyInstance, type FastifyRequest } from 'fastify'
 import { createUserSchema, getAllOtherUsersSchema, getUserSchema, loginUserSchema } from '../schemas/user'
-import { createUserHandler, getAllOtherUsersHandler, getUserHandler, loginUserHandler, updateUserHanlder } from '../controllers/user'
+import { createUserHandler, getAllOtherUsersHandler, getUserHandler, loginUserHandler, pusherPresenceSubscribeHandler, updateUserHanlder } from '../controllers/user'
 import verifyToken from '../controllers/auth/verifyToken'
 import { type ITokenHeader } from '../interfaces/user'
 import upload from '../config/multer'
@@ -25,6 +25,14 @@ export const userPrivateRoutes = (
   })
   fastify.get('/user', getUserSchema, getUserHandler)
   fastify.get('/users', getAllOtherUsersSchema, getAllOtherUsersHandler)
+  fastify.post('/pusher/auth', {
+    preValidation: (req, reply, done) => {
+    // Override content type for Pusher authorization
+      req.headers['content-type'] = 'application/x-www-form-urlencoded'
+      done()
+    }
+  }, pusherPresenceSubscribeHandler)
+
   fastify.put('/user', { preHandler: upload.single('image') }, updateUserHanlder)
   done()
 }

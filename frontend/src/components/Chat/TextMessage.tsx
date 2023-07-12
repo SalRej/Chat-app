@@ -7,15 +7,13 @@ import isValidHttpUrl from '../../utilis/isValidHttpUrl'
 
 interface Props {
   userToChat: User | null
-  index: number
   message: Message
 }
-const TextMessage = ({ userToChat, index, message }: Props): JSX.Element => {
+const TextMessage = ({ userToChat, message }: Props): JSX.Element => {
   const isSender = message.senderId !== userToChat?.id
   return (
     <Box
         sx={{
-          marginTop: index === 0 ? 'auto' : 'inherit',
           maxWidth: '50%',
           padding: '0.5em 0.4em',
           alignSelf: isSender ? 'flex-end' : 'flex-start',

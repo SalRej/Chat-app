@@ -10,7 +10,7 @@ import { messagesRoutes } from './routes/message'
 import multipart from '@fastify/multipart'
 import fastifyStatic from '@fastify/static'
 import path from 'path'
-
+import fastifyFormbody from '@fastify/formbody'
 const prisma = new PrismaClient()
 
 const startServer = (): void => {
@@ -37,6 +37,7 @@ const startServer = (): void => {
 
   server.register(cors, {})
   server.register(multipart)
+  server.register(fastifyFormbody)
   server.register(fastifyStatic, {
     root: path.join(publicPath),
     prefix: '/public/' // Specify the URL prefix to access the static files

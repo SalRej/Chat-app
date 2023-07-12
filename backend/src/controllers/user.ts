@@ -9,6 +9,7 @@ import sharp from 'sharp'
 import isImageFile from '../utilis/isImageFile'
 import generateFileName from '../utilis/generateFileName'
 import getExtension from '../utilis/getExtention'
+import pusher from '../config/pusher'
 
 const prisma = new PrismaClient()
 
@@ -228,4 +229,20 @@ export const updateUserHanlder = async (
     })
     return await res.code(201).send(updatedUser)
   }
+}
+
+export const pusherPresenceSubscribeHandler = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: { socket_id: string, channel_name: string } }>,
+  res: FastifyReply
+): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { socket_id, channel_name } = req.body
+  const { id } = req.headers
+
+  const data: any = {
+    user_id: id
+  }
+
+  const t = pusher.authorizeChannel(socket_id, channel_name, data)
+  return await res.code(200).send(t)
 }

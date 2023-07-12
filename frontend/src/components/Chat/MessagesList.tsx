@@ -58,6 +58,7 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
                     direction={isSender ? 'row-reverse' : 'row'}
                     alignItems="center"
                     spacing={1}
+                    sx={{ marginTop: index === 0 ? 'auto' : 'inherit' }}
                   >
                       {isUserChanged || (index === messages.length - 1)
                         ? <ChatAvatar user={user} userToChat={userToChat} isSender={isSender} />
@@ -67,7 +68,6 @@ const MessagesList = ({ messages, userToChat }: Props): JSX.Element => {
                         <TextMessage
                           message={message}
                           userToChat={userToChat}
-                          index={index}
                         />
                       }
                       {
