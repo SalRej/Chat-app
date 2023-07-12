@@ -8,7 +8,7 @@ import UserItemAvatar from './UserItemAvatar'
 
 interface Props {
   user: Users
-  changeChattingUser: (user: User, id: string) => void
+  changeChattingUser: (user: User) => void
 }
 const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
   const lastSentMessageDate = new Date(user.sentMessages[0]?.createdAt ?? 0)
@@ -28,7 +28,7 @@ const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
 
   return (
     <>
-        <ListItemButton onClick={() => { changeChattingUser(user, lastMessage?.id) }} key={user.id}>
+        <ListItemButton onClick={() => { changeChattingUser(user) }} key={user.id}>
             <ListItemIcon>
               <UserItemAvatar user={user}/>
             </ListItemIcon>

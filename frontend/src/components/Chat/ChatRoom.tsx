@@ -25,7 +25,6 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
     const channel = pusher.subscribe(channelName)
 
     channel.bind('message_sent', (data: any) => {
-      console.log('recieve message')
       const { message } = data
       setMessages((prev: Message[]) => {
         return [
@@ -51,9 +50,6 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
       })
   }, [lastMessageId, userToChat?.id])
 
-  useEffect(() => {
-    console.log(messages)
-  }, [messages.length])
   const fetchMoreMessages = (): void => {
     // this triggers fetch
     setLastMessageId(messages[messages?.length - 1]?.id)

@@ -18,7 +18,6 @@ const IconsHolder = ({ open, anchorEl, handleIconMessageClick, setOpen }: Props)
                     Object.keys(icons).map((iconName: any) => {
                       const IconComponent = icons[iconName].component
                       const IconProps = icons[iconName].props
-                      console.log(IconProps)
                       return (
                         <IconButton key={iconName} onClick={() => { setOpen(false); handleIconMessageClick(iconName) }}>
                             <IconComponent {...IconProps} />

@@ -75,19 +75,19 @@ export const createMessageHandler = async (
   if (message) {
     const channel1Name = [id as string, recieverId].sort().join('-')
     const channel2Name = `messages-${recieverId}`
+    const channel3Name = `messages-${id as string}`
 
     pusher.trigger(channel1Name, 'message_sent', {
       message
     })
 
-    pusher.trigger(channel2Name, 'message_recieved', {
-      message,
-      senderId: id as string
+    pusher.trigger([channel2Name, channel3Name], 'update_user_list_message', {
+      message
     })
 
     return await res.code(200).send(message)
   } else {
-    return await res.code(200).send('Could not create the message')
+    return await res.code(200).send('Could not update the message')
   }
 }
 

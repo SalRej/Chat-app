@@ -132,7 +132,6 @@ const useTodo = (): {
       console.log(err)
     },
     onSettled: () => {
-      console.log('set')
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: ['todos'] })
     }

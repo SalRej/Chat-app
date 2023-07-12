@@ -34,9 +34,9 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
     const channel = pusher.subscribe(channelName)
 
     channel.bind('message_seen', (data: { message: Message, recieverId: string }) => {
-      const { message, recieverId } = data
+      const { message } = data
       setUsers((prevUsers: Users[]) => {
-        const indexToUpdate = prevUsers.findIndex((user: User) => user?.id === recieverId)
+        const indexToUpdate = prevUsers.findIndex((user: User) => (user?.id === message.recieverId || user?.id === message.senderId))
         if (indexToUpdate !== -1) {
           const newUsers = [...prevUsers]
           newUsers[indexToUpdate].sentMessages[0] = message
@@ -46,10 +46,12 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
       })
     })
 
-    channel.bind('message_recieved', (data: { message: Message, senderId: string }) => {
-      const { message, senderId } = data
+    channel.bind('update_user_list_message', (data: { message: Message }) => {
+      const { message } = data
+
       setUsers((prevUsers: Users[]) => {
-        const indexToUpdate = prevUsers.findIndex((user: User) => user?.id === senderId)
+        const indexToUpdate = prevUsers.findIndex((user: User) => (user?.id === message.recieverId || user?.id === message.senderId))
+        console.log(indexToUpdate, message)
         if (indexToUpdate !== -1) {
           const newUsers = [...prevUsers]
           newUsers[indexToUpdate].sentMessages[0] = message
@@ -64,7 +66,7 @@ const UsersList = ({ setUserToChat }: Props): JSX.Element => {
     return <p>Loading</p>
   }
 
-  const changeChattingUser = (user: User, id: string): void => {
+  const changeChattingUser = (user: User): void => {
     setUserToChat(user)
   }
 

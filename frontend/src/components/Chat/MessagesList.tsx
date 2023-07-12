@@ -39,6 +39,10 @@ const MessagesList = ({ messages, userToChat, fetchMoreMessages }: Props): JSX.E
 
   useEffect(() => {
     const lastMessage = messages[0]
+    if (lastMessage?.senderId !== userToChat?.id) {
+      return
+    }
+
     if (lastMessage && userToChat?.id && lastMessage.senderId !== user?.id) {
       seeMessage({ recieverId: userToChat?.id, messageId: lastMessage.id })
     }

@@ -19,6 +19,7 @@ model User {
   sentMessages     Message[] @relation("Sender")
   recievedMessages Message[] @relation("Reciever")
   profileImageUrl  String?
+  lastOnline       DateTime  @default(now())
 }
 
 model Todo {
