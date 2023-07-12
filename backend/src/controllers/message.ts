@@ -10,14 +10,15 @@ import getExtension from '../utilis/getExtention'
 const prisma = new PrismaClient()
 
 export const getMessagesHandler = async (
-  req: FastifyRequest<{ Headers: ITokenHeader, Params: { chattingUserId: string, lastMessageId: string } }>,
+  req: FastifyRequest<{ Headers: ITokenHeader, Params: { chattingUserId: string, lastMessageId: string | null } }>,
   res: FastifyReply
 ): Promise<void> => {
   const { id } = req.headers
   const { chattingUserId, lastMessageId } = req.params
-
+  const numMessages = 20
   let messages
-  if (lastMessageId) {
+  if (lastMessageId !== 'null' && lastMessageId !== 'undefined') {
+    console.log('not null')
     messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -25,16 +26,17 @@ export const getMessagesHandler = async (
           { recieverId: chattingUserId, senderId: id }
         ]
       },
-      take: 3,
+      take: numMessages,
       orderBy: {
         createdAt: 'desc'
       },
       cursor: {
-        id: lastMessageId
+        id: lastMessageId as string
       },
       skip: 1
     })
   } else {
+    console.log('here')
     messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -42,7 +44,7 @@ export const getMessagesHandler = async (
           { recieverId: chattingUserId, senderId: id }
         ]
       },
-      take: 3,
+      take: numMessages,
       orderBy: {
         createdAt: 'desc'
       }

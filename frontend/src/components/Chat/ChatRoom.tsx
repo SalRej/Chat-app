@@ -8,7 +8,6 @@ import MessagesList from './MessagesList'
 import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
-import Loading from '../Loading'
 import ChatHeader from './ChatHeader'
 
 interface Props {
@@ -17,20 +16,22 @@ interface Props {
 const ChatRoom = ({ userToChat }: Props): JSX.Element => {
   const { user } = useContext(AuthContext)
   const [messages, setMessages] = useState<Message[]>([])
+  const [lastMessageId, setLastMessageId] = useState<string | null>(null)
 
-  const { isLoading } = useQuery({
-    queryFn: async () => {
-      return await axiosInstance.get(`/message/${userToChat?.id as string}`)
+  useQuery({
+    queryFn: async ({ queryKey }) => {
+      return await axiosInstance.get(`/message/${userToChat?.id as string}/${queryKey[2] as string}`)
     },
-    onSuccess: (data) => {
-      setMessages(data?.data ?? [])
+    onSuccess: (data: any) => {
+      setMessages((prev: Message[]) => {
+        return [...prev, ...data?.data]
+      })
     },
-    queryKey: [userToChat?.id, 'message']
+    queryKey: [userToChat?.id, 'message', lastMessageId]
   })
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/require-array-sort-compare
-    const channelName = [user?.id, userToChat?.id].sort().join('-')
+    const channelName = [user?.id as string, userToChat?.id as string].sort().join('-')
     const channel = pusher.subscribe(channelName)
 
     channel.bind('message_sent', (data: any) => {
@@ -42,10 +43,16 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
         ]
       })
     })
-  }, [userToChat])
 
-  if (isLoading) {
-    return <Loading />
+    setMessages([])
+  }, [userToChat?.id])
+
+  useEffect(() => {
+  }, [messages.length])
+
+  const fetchMoreMessages = (): void => {
+    // this triggers fetch
+    setLastMessageId(messages[messages?.length - 1]?.id)
   }
 
   return (
@@ -58,7 +65,7 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
       }}
     >
       <ChatHeader userToChat={userToChat} />
-      <MessagesList userToChat={userToChat} messages={messages} />
+      <MessagesList userToChat={userToChat} messages={messages} fetchMoreMessages={fetchMoreMessages} />
       <ChatInput userToChat={userToChat}/>
     </Box>
   )
