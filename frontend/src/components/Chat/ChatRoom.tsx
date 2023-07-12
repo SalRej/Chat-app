@@ -9,6 +9,7 @@ import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
 import Loading from '../Loading'
+import ChatHeader from './ChatHeader'
 
 interface Props {
   userToChat: User | null
@@ -56,6 +57,7 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
         height: '100%'
       }}
     >
+      <ChatHeader userToChat={userToChat} />
       <MessagesList userToChat={userToChat} messages={messages} />
       <ChatInput userToChat={userToChat}/>
     </Box>
