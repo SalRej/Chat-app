@@ -32,17 +32,17 @@ const MessagesList = ({ messages, userToChat, fetchMoreMessages }: Props): JSX.E
   })
 
   useEffect(() => {
-    console.log('mount')
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight
     }
+  }, [userToChat?.id])
 
-    const lastMessage = messages[messages.length - 1]
-
+  useEffect(() => {
+    const lastMessage = messages[0]
     if (lastMessage && userToChat?.id && lastMessage.senderId !== user?.id) {
       seeMessage({ recieverId: userToChat?.id, messageId: lastMessage.id })
     }
-  }, [])
+  }, [userToChat?.id, messages.length])
 
   return (
     <Stack id="scrollableDiv" sx={{ overflowY: 'scroll', flex: '1 1 0', pb: 2 }} direction="column-reverse" ref={containerRef}>
@@ -52,7 +52,7 @@ const MessagesList = ({ messages, userToChat, fetchMoreMessages }: Props): JSX.E
             dataLength={messages.length}
             next={fetchMoreMessages}
             hasMore={true}
-            style={{ display: 'flex', flexDirection: 'column-reverse' }} // To put endMessage and loader to the top.
+            style={{ display: 'flex', flexDirection: 'column-reverse' }}
             loader={<h4>Loading...</h4>}
             scrollableTarget="scrollableDiv"
             inverse={true}

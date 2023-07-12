@@ -18,7 +18,6 @@ export const getMessagesHandler = async (
   const numMessages = 20
   let messages
   if (lastMessageId !== 'null' && lastMessageId !== 'undefined') {
-    console.log('not null')
     messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -36,7 +35,6 @@ export const getMessagesHandler = async (
       skip: 1
     })
   } else {
-    console.log('here')
     messages = await prisma.message.findMany({
       where: {
         OR: [
