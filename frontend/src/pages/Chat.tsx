@@ -1,13 +1,14 @@
 // Chat component
 import React, { useEffect, useState } from 'react'
 import UsersList, { type Users } from '../components/Chat/UsersList'
-import { Grid, Stack } from '@mui/material'
-import ChatRoom from '../components/Chat/ChatRoom'
+import { Grid, Stack, useMediaQuery, useTheme } from '@mui/material'
 import type User from '../interfaces/User'
 import Header from '../components/Header'
 import Pusher from 'pusher-js'
 import ActiveUsersContext from '../context/ActiveUsersContext'
 import axiosInstance from '../config/axiosInstance'
+import { Outlet } from 'react-router-dom'
+import ChattingUserContext from '../context/ChattingUserContext'
 
 const Chat = (): JSX.Element => {
   const [userToChat, setUserToChat] = useState<User | null>(null)
@@ -15,6 +16,8 @@ const Chat = (): JSX.Element => {
   const [activeUsers, setActiveUsers] = useState<string[]>([])
   const [users, setUsers] = useState<Users[]>([])
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   useEffect(() => {
     // new pusher instance, becouse on login the header with token does not update and it is null
     const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY as string, {
@@ -61,23 +64,31 @@ const Chat = (): JSX.Element => {
 
   return (
     <ActiveUsersContext.Provider value={activeUsers}>
-      <Stack sx={{ height: '100vh', width: '100%' }}>
-        <Header />
-        {!userToChat && <Grid item xs={12} flexGrow={1}>
-            <UsersList setUserToChat={setUserToChat} setUsers={setUsers} users={users} />
-          </Grid>
-        }
-        {userToChat &&
-          <Grid container sx={{ height: '100%', flexGrow: 1 }}>
-            <Grid item xs={5} md={3}>
+      <ChattingUserContext.Provider value={{ userToChat, setUserToChat }}>
+        <Stack sx={{ height: '100vh', width: '100%' }}>
+          <Header />
+          {!userToChat && <Grid item xs={12} flexGrow={1}>
               <UsersList setUserToChat={setUserToChat} setUsers={setUsers} users={users} />
             </Grid>
-            <Grid item xs={7} md={9} sx={{ height: '100%' }}>
-              <ChatRoom userToChat={userToChat}/>
+          }
+          {(userToChat && (!isMobile)) &&
+            <Grid container sx={{ height: '100%', flexGrow: 1 }}>
+              <Grid item xs={5} md={3}>
+                <UsersList setUserToChat={setUserToChat} setUsers={setUsers} users={users} />
+              </Grid>
+              <Grid item xs={7} md={9} sx={{ height: '100%' }}>
+                <Outlet />
+              </Grid>
             </Grid>
-          </Grid>
-        }
-      </Stack>
+          }
+          {
+            (userToChat && isMobile) &&
+            <Grid item xs={12} sx={{ height: '100%' }}>
+                <Outlet />
+              </Grid>
+          }
+        </Stack>
+      </ChattingUserContext.Provider>
     </ActiveUsersContext.Provider>
   )
 }

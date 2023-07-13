@@ -4,20 +4,29 @@ import axiosInstance from '../../config/axiosInstance'
 import pusher from '../../config/pusher'
 import ChatInput from './ChatInput'
 import MessagesList from './MessagesList'
-import type User from '../../interfaces/User'
 import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
 import ChatHeader from './ChatHeader'
+import ChattingUserContext from '../../context/ChattingUserContext'
 
-interface Props {
-  userToChat: User | null
-}
-const ChatRoom = ({ userToChat }: Props): JSX.Element => {
+const ChatRoom = (): JSX.Element => {
+  const { userToChat, setUserToChat } = useContext(ChattingUserContext)
   const { user } = useContext(AuthContext)
   const [messages, setMessages] = useState<Message[]>([])
   const [lastMessageId, setLastMessageId] = useState<string | null>(null)
 
   const isInitialRender = useRef(true)
+
+  useEffect(() => {
+    if (isInitialRender.current) {
+      return
+    }
+
+    return () => {
+      setUserToChat(null)
+    }
+  }, [])
+
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false

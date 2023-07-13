@@ -72,6 +72,22 @@ const ChatInput = ({ userToChat }: Props): JSX.Element => {
     <Box component="form" sx={{ width: '100%' }} onSubmit={onSubmit}>
         <Divider variant="middle" />
         <Stack spacing={2} direction='row' sx={{ width: '100%', pt: 3 }}>
+            <input
+                id="fileInput"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={handleFileInputChange}
+            />
+            <label htmlFor="fileInput">
+                <Fab onClick={handleFabClick} color="primary" aria-label="add" size="small">
+                    <CloudUploadIcon />
+                </Fab>
+            </label>
+            <label>
+              <Fab onClick={handleOpenIconsClick} color="primary" size="small">
+                <InsertEmoticonIcon />
+              </Fab>
+            </label>
             <Stack direction='row' sx={{ width: '100%' }}>
                 <TextField
                   value={textMessage}
@@ -81,26 +97,9 @@ const ChatInput = ({ userToChat }: Props): JSX.Element => {
                 ></TextField>
                 <Button variant='contained' sx={{ borderTopRightRadius: '15px', borderBottomRightRadius: '15px' }}>Send</Button>
             </Stack>
-            <input
-                id="fileInput"
-                type="file"
-                style={{ display: 'none' }}
-                onChange={handleFileInputChange}
-            />
-
-            <label htmlFor="fileInput">
-                <Fab onClick={handleFabClick} color="primary" aria-label="add" size="small">
-                    <CloudUploadIcon />
-                </Fab>
-            </label>
             <label>
               <Fab onClick={() => { handleIconMessageClick('ThumbUpIcon') }} color="primary" size="small">
                 <ThumbUpIcon />
-              </Fab>
-            </label>
-            <label>
-              <Fab onClick={handleOpenIconsClick} color="primary" size="small">
-                <InsertEmoticonIcon />
               </Fab>
             </label>
             <IconsHolder

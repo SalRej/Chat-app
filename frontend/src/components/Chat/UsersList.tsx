@@ -7,6 +7,7 @@ import UserItem from './UserItem'
 import pusher from '../../config/pusher'
 import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
+import { useNavigate } from 'react-router-dom'
 interface Props {
   setUserToChat: Dispatch<SetStateAction<User | null>>
   users: Users[]
@@ -20,7 +21,7 @@ export interface Users extends User {
 
 const UsersList = ({ setUserToChat, users, setUsers }: Props): JSX.Element => {
   const { user } = useContext(AuthContext)
-
+  const navigate = useNavigate()
   const { isLoading } = useQuery(['users'], {
     queryFn: async () => {
       return await axiosInstance.get('/users')
@@ -68,6 +69,7 @@ const UsersList = ({ setUserToChat, users, setUsers }: Props): JSX.Element => {
 
   const changeChattingUser = (user: User): void => {
     setUserToChat(user)
+    navigate('member')
   }
 
   return (

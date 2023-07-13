@@ -20,7 +20,7 @@ const FileMessage = ({ message, userToChat }: any): JSX.Element => {
             alignSelf: message.senderId === userToChat.id ? 'flex-start' : 'flex-end',
             display: 'block',
             height: '300px',
-            maxWidth: '30%'
+            maxWidth: '50%'
           }} href={`http://localhost:5000/${message.text as string}`} target='_blank' rel="noreferrer">
               <img
                 style={{
