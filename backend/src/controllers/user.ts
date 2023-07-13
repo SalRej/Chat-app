@@ -243,6 +243,30 @@ export const pusherPresenceSubscribeHandler = async (
     user_id: id
   }
 
-  const t = pusher.authorizeChannel(socket_id, channel_name, data)
-  return await res.code(200).send(t)
+  const auth = pusher.authorizeChannel(socket_id, channel_name, data)
+
+  return await res.code(200).send(auth)
+}
+
+export const offlineUserHandler = async (
+  req: FastifyRequest<{ Headers: ITokenHeader, Body: { userId: string } }>,
+  res: FastifyReply
+): Promise<void> => {
+  const { userId } = req.body
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      lastOnline: new Date()
+    }
+  })
+
+  if (updatedUser) {
+    const channelName = 'presence-users'
+    pusher.trigger(channelName, 'update_user_online_time', updatedUser)
+    return await res.code(200).send(updatedUser)
+  } else {
+    return await res.code(500).send('Could not update user')
+  }
 }

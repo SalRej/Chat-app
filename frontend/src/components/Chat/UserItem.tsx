@@ -11,10 +11,10 @@ interface Props {
   changeChattingUser: (user: User) => void
 }
 const UserItem = ({ user, changeChattingUser }: Props): JSX.Element => {
-  const lastSentMessageDate = new Date(user.sentMessages[0]?.createdAt ?? 0)
-  const lastRecievedMessageDate = new Date(user.recievedMessages[0]?.createdAt ?? 0)
+  const lastSentMessageDate = new Date(user?.sentMessages[0]?.createdAt ?? 0)
+  const lastRecievedMessageDate = new Date(user?.recievedMessages[0]?.createdAt ?? 0)
 
-  const lastMessage = lastSentMessageDate > lastRecievedMessageDate ? user.sentMessages[0] : user.recievedMessages[0]
+  const lastMessage = lastSentMessageDate > lastRecievedMessageDate ? user?.sentMessages[0] : user?.recievedMessages[0]
 
   const options: Intl.DateTimeFormatOptions = ({ weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })
   const formater = new Intl.DateTimeFormat('en-US', options)

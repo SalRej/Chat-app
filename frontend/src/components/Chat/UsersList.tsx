@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, type Dispatch, type SetStateAction, useContext, useState } from 'react'
+import React, { useEffect, type Dispatch, type SetStateAction, useContext } from 'react'
 import axiosInstance from '../../config/axiosInstance'
 import { List, Paper } from '@mui/material'
 import type User from '../../interfaces/User'
@@ -9,16 +9,17 @@ import AuthContext from '../../context/AuthContext'
 import type Message from '../../interfaces/Message'
 interface Props {
   setUserToChat: Dispatch<SetStateAction<User | null>>
+  users: Users[]
+  setUsers: React.Dispatch<React.SetStateAction<Users[]>>
 }
 
 export interface Users extends User {
   recievedMessages: Message[]
   sentMessages: Message[]
 }
-const UsersList = ({ setUserToChat }: Props): JSX.Element => {
-  const { user } = useContext(AuthContext)
 
-  const [users, setUsers] = useState<Users[]>([])
+const UsersList = ({ setUserToChat, users, setUsers }: Props): JSX.Element => {
+  const { user } = useContext(AuthContext)
 
   const { isLoading } = useQuery(['users'], {
     queryFn: async () => {

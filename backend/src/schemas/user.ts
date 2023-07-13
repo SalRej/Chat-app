@@ -100,6 +100,7 @@ export const getAllOtherUsersSchema = {
             email: { type: 'string' },
             id: { type: 'string' },
             profileImageUrl: { type: 'string' },
+            lastOnline: { type: 'string' },
             sentMessages: {
               type: 'array',
               items: {

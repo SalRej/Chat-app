@@ -193,6 +193,7 @@ export const createMessageWithIconHandler = async (
     return await res.code(200).send('Could not create the message')
   }
 }
+
 export const seenMessageHanlder = async (
   req: FastifyRequest<{ Headers: ITokenHeader, Body: { messageId: string, recieverId: string } }>,
   res: FastifyReply
