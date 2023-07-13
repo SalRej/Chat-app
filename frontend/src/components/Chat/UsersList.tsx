@@ -52,7 +52,6 @@ const UsersList = ({ setUserToChat, users, setUsers }: Props): JSX.Element => {
 
       setUsers((prevUsers: Users[]) => {
         const indexToUpdate = prevUsers.findIndex((user: User) => (user?.id === message.recieverId || user?.id === message.senderId))
-        console.log(indexToUpdate, message)
         if (indexToUpdate !== -1) {
           const newUsers = [...prevUsers]
           newUsers[indexToUpdate].sentMessages[0] = message

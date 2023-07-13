@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import axiosInstance from '../../config/axiosInstance'
 import pusher from '../../config/pusher'
 import ChatInput from './ChatInput'
@@ -17,7 +17,12 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
   const [messages, setMessages] = useState<Message[]>([])
   const [lastMessageId, setLastMessageId] = useState<string | null>(null)
 
+  const isInitialRender = useRef(true)
   useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false
+      return
+    }
     setMessages([])
     setLastMessageId(null)
 
@@ -26,6 +31,7 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
 
     channel.bind('message_sent', (data: any) => {
       const { message } = data
+      console.log(message)
       setMessages((prev: Message[]) => {
         return [
           message,
@@ -33,26 +39,27 @@ const ChatRoom = ({ userToChat }: Props): JSX.Element => {
         ]
       })
     })
+    fetchMessages(null)
 
     return () => {
       pusher.unsubscribe(channelName)
     }
   }, [userToChat?.id])
 
-  useEffect(() => {
+  const fetchMessages = (lastMessageId: string | null): void => {
     axiosInstance.get(`/message/${userToChat?.id as string}/${lastMessageId as string}`)
       .then((res) => {
         setMessages((prev: Message[]) => {
+          setLastMessageId(res?.data[res?.data.length - 1]?.id)
           return [...prev, ...res?.data]
         })
       }).catch((e) => {
         console.log(e)
       })
-  }, [lastMessageId, userToChat?.id])
+  }
 
   const fetchMoreMessages = (): void => {
-    // this triggers fetch
-    setLastMessageId(messages[messages?.length - 1]?.id)
+    fetchMessages(lastMessageId as string)
   }
 
   return (
